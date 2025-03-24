@@ -1,12 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from '../../src/app.controller';
-import { AppService } from '../../src/app.service';
+import { AppController } from '../../src/app/app.controller';
+import { AppService } from '../../src/app/app.service';
+import { ConfigModule } from '@nestjs/config';
+import configuration from 'src/config/configuration';
 
 describe('AppController', () => {
   let appController: AppController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule.forRoot({ isGlobal: true, load: [configuration] })],
       controllers: [AppController],
       providers: [AppService],
     }).compile();
