@@ -1,4 +1,5 @@
 import type { Image } from 'src/image/entity/image.entity';
+import type { Purchase } from 'src/purchase/entity/purchase.entity';
 
 export class Product {
   id: string;
@@ -8,6 +9,7 @@ export class Product {
   description: string;
   keywords: string;
   images: Array<Image>;
+  purchases: Array<Purchase>;
 
   constructor(
     idMl: string,
