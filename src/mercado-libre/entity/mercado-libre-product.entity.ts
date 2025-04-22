@@ -62,6 +62,7 @@ export class MercadoLibreProduct {
       new Date(this.date_created),
       this.description ?? '',
       this.keywords,
+      this.pictures.map((picture) => picture.image),
     );
   }
 
