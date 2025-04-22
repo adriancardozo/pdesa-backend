@@ -1,3 +1,4 @@
+import type { Favorite } from 'src/favorite/entity/favorite.entity';
 import type { Role } from '../enum/role.enum';
 
 export class User {
@@ -9,4 +10,5 @@ export class User {
   lastName: string;
   email: string;
   dni: string;
+  favorites: Array<Favorite>;
 }

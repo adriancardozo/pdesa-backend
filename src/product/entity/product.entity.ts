@@ -1,3 +1,4 @@
+import type { Favorite } from 'src/favorite/entity/favorite.entity';
 import type { Image } from 'src/image/entity/image.entity';
 import type { Purchase } from 'src/purchase/entity/purchase.entity';
 
@@ -10,6 +11,7 @@ export class Product {
   keywords: string;
   images: Array<Image>;
   purchases: Array<Purchase>;
+  favorites: Array<Favorite>;
 
   constructor(
     idMl: string,
