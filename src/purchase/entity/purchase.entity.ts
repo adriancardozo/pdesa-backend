@@ -1,8 +1,13 @@
 import type { Product } from 'src/product/entity/product.entity';
+import { BaseEntity } from 'src/shared/entity/base.entity';
+import typeorm, { Column, Entity, ManyToOne } from 'typeorm';
 
-export class Purchase {
-  id: string;
+@Entity()
+export class Purchase extends BaseEntity {
+  @Column()
   price: number;
+  @Column()
   amount: number;
-  product: Product;
+  @ManyToOne('Product', (product: Product) => product.purchases)
+  product: typeorm.Relation<Product>;
 }

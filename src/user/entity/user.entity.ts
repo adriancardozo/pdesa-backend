@@ -1,14 +1,24 @@
 import type { Favorite } from 'src/favorite/entity/favorite.entity';
-import type { Role } from '../enum/role.enum';
+import { Role } from '../enum/role.enum';
+import typeorm, { Column, Entity, OneToMany } from 'typeorm';
+import { BaseEntity } from 'src/shared/entity/base.entity';
 
-export class User {
-  id: string;
+@Entity()
+export class User extends BaseEntity {
+  @Column({ type: 'nvarchar', default: Role.administrator })
   role: Role;
+  @Column()
   username: string;
+  @Column()
   password: string;
+  @Column()
   firstName: string;
+  @Column()
   lastName: string;
+  @Column()
   email: string;
+  @Column()
   dni: string;
-  favorites: Array<Favorite>;
+  @OneToMany('Favorite', (favorite: Favorite) => favorite.user, { cascade: true })
+  favorites: Array<typeorm.Relation<Favorite>>;
 }
