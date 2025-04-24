@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FavoriteService } from 'src/favorite/favorite.service';
+import { ValidationService } from 'src/validation/validation.service';
 import { mock } from 'test/resources/mocks/mock';
 
-describe('FavoriteService', () => {
+describe('ValidationService', () => {
   let module: TestingModule;
-  let service: FavoriteService;
+  let service: ValidationService;
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      providers: [FavoriteService],
+      providers: [ValidationService],
     })
       .useMocker(mock)
       .compile();
 
-    service = module.get<FavoriteService>(FavoriteService);
+    service = module.get<ValidationService>(ValidationService);
   });
 
   it('should be defined', () => {

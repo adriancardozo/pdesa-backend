@@ -1,13 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductService } from 'src/product/product.service';
+import { mock } from 'test/resources/mocks/mock';
 
 describe('ProductService', () => {
+  let module: TestingModule;
   let service: ProductService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       providers: [ProductService],
-    }).compile();
+    })
+      .useMocker(mock)
+      .compile();
 
     service = module.get<ProductService>(ProductService);
   });
@@ -15,4 +19,6 @@ describe('ProductService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  afterEach(async () => await module.close());
 });

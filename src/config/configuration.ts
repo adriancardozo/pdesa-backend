@@ -28,6 +28,12 @@ const configuration = {
       },
     },
   },
+  error: {
+    message: {
+      mlServiceUnavailable: 'MercadoLibre Service is not available',
+      mlProductInactive: 'Product not exists or is inactive.',
+    },
+  },
 };
 
 export type Configuration = typeof configuration;

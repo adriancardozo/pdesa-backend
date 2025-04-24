@@ -1,13 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ImageService } from 'src/image/image.service';
+import { mock } from 'test/resources/mocks/mock';
 
 describe('ImageService', () => {
+  let module: TestingModule;
   let service: ImageService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       providers: [ImageService],
-    }).compile();
+    })
+      .useMocker(mock)
+      .compile();
 
     service = module.get<ImageService>(ImageService);
   });
@@ -15,4 +19,6 @@ describe('ImageService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  afterEach(async () => await module.close());
 });

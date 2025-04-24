@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from '../config/configuration';
 import { MercadoLibreModule } from 'src/mercado-libre/mercado-libre.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DATA_SOURCE_OPTIONS } from 'src/config/data-sorce.options';
+import { DATA_SOURCE_OPTIONS } from 'src/config/data-source.options';
 
 @Module({
   imports: [

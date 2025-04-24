@@ -12,6 +12,10 @@ import { Type } from 'class-transformer';
 import { MercadoLibreProductPicture } from './mercado-libre-product-picture.entity';
 import { Product } from 'src/product/entity/product.entity';
 import { NotFoundException } from '@nestjs/common';
+import { CONFIG_SERVICE } from 'src/shared/config/config.service';
+import { Configuration } from 'src/config/configuration';
+
+const errors: Configuration['error']['message'] = CONFIG_SERVICE.get('error.message')!;
 
 export class MercadoLibreProduct {
   @IsString()
@@ -55,7 +59,7 @@ export class MercadoLibreProduct {
   variations: Array<any>;
 
   get product(): Product {
-    if (!this.active()) throw new NotFoundException('Product not exists or is inactive.');
+    if (!this.active()) throw new NotFoundException(errors.mlProductInactive);
     return new Product(
       this.id,
       this.name,
