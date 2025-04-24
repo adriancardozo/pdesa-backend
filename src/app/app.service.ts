@@ -12,8 +12,4 @@ export class AppService {
   version(): string {
     return this.version_string;
   }
-
-  getHello(): string {
-    return 'Hello World!';
-  }
 }

@@ -1,5 +1,5 @@
 # Build stage
-FROM node:22.13.0-alpine AS build
+FROM node:22.14.0-alpine AS build
 WORKDIR /usr/src/app
 
 # Install dependencies and build project
@@ -9,7 +9,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:22.13.0-alpine AS production
+FROM node:22.14.0-alpine AS production
 WORKDIR /usr/src/app
 
 # Get image arguments and set build environment variables
