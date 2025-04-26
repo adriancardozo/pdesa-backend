@@ -1,10 +1,7 @@
 import { plainToInstance } from 'class-transformer';
 import { MercadoLibreProductPicture } from 'src/mercado-libre/entity/mercado-libre-product-picture.entity';
 import { Image } from 'src/image/entity/image.entity';
-import {
-  imageJson,
-  mlProductPictureJson,
-} from '../test-data/entity/mercado-libre-product-picture.entity.data';
+import { imageJson, mlProductPictureJson } from './test-data/mercado-libre-product-picture.entity.data';
 
 describe('MercadoLibreProductPicture', () => {
   let mlProductPicture: MercadoLibreProductPicture;
