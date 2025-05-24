@@ -28,7 +28,7 @@ export class AuthService {
 
   async login({ id, username }: User): Promise<TokenResponse> {
     const payload = { id, username };
-    return { access_token: await this.jwtService.signAsync(payload) };
+    return new TokenResponse(await this.jwtService.signAsync(payload));
   }
 
   profile(user: User): User {
