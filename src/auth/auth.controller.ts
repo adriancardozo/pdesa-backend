@@ -8,6 +8,10 @@ import { VALIDATION_PIPE } from 'src/validation/pipe/validation.pipe';
 import { UserRequest } from './type/user-request.type';
 import { TokenResponse } from './response/token.response';
 import { RegisterPurchaserDto } from './dto/register-purchaser.dto';
+import { RegisterAdministratorDto } from './dto/register-administrator.dto';
+import { RolesGuard } from './guard/roles.guard';
+import { Roles } from './decorator/roles.decorator';
+import { Role } from 'src/user/enum/role.enum';
 
 @Controller('auth')
 @UsePipes(VALIDATION_PIPE)
@@ -28,6 +32,20 @@ export class AuthController {
   @ApiBody({ type: RegisterPurchaserDto })
   @Post('register/purchaser')
   async registerPurchaser(@Body() registerDto: RegisterPurchaserDto): Promise<TokenResponse> {
+    return await this.authService.register(registerDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.administrator)
+  @ApiOperation({
+    summary: 'Register administrator',
+    description: `*roles*: **${[Role.administrator].toString()}**`,
+  })
+  @ApiResponse({ type: TokenResponse })
+  @ApiBody({ type: RegisterAdministratorDto })
+  @Post('register/administrator')
+  async registerAdministrator(@Body() registerDto: RegisterAdministratorDto): Promise<TokenResponse> {
     return await this.authService.register(registerDto);
   }
 
