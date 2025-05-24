@@ -7,6 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserPayload } from './type/user-payload.type';
 import { Configuration } from 'src/config/configuration';
 import { ConfigService } from '@nestjs/config';
+import { UsersQueries } from './queries/users.queries';
 
 @Injectable()
 export class UserService {
@@ -30,6 +31,12 @@ export class UserService {
 
   async findOneByPayload({ username }: UserPayload, manager?: EntityManager): Promise<User | null> {
     return await this.findOneByUsername(username, manager);
+  }
+
+  async users({ role }: UsersQueries, manager?: EntityManager): Promise<Array<User>> {
+    return await this.transactionService.transaction(async (manager) => {
+      return await manager.findBy(User, { role });
+    }, manager);
   }
 
   async create(dto: CreateUserDto, manager?: EntityManager): Promise<User> {

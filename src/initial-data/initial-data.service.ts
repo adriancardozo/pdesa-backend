@@ -8,14 +8,14 @@ import { Configuration } from 'src/config/configuration';
 
 @Injectable()
 export class InitialDataService {
-  private errorRegexes: Configuration['error']['regex'];
+  private errors: Configuration['error']['message'];
 
   constructor(
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly transactionService: TransactionService,
   ) {
-    this.errorRegexes = this.configService.get('error.regex')!;
+    this.errors = this.configService.get('error.message')!;
   }
 
   async initialize(manager?: EntityManager) {
@@ -28,7 +28,7 @@ export class InitialDataService {
     try {
       return await callback();
     } catch (error) {
-      if (this.errorRegexes.unique.test(error)) return null;
+      if (error.message && this.errors.userAlreadyExists === error.message) return null;
       throw error;
     }
   }

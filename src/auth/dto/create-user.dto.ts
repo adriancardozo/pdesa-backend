@@ -29,7 +29,7 @@ export class CreateUserDto {
   @IsString()
   @IsStrongPassword()
   password: string;
-  @ApiProperty()
+  @ApiProperty({ enum: Role, default: Role.purchaser })
   @IsOptional()
   @IsEnum(Role)
   role: Role = Role.purchaser;
