@@ -9,7 +9,7 @@ import {
   mlProductJson,
   picturesJson,
   productJson,
-} from '../test-data/entity/mercado-libre-product.entity.data';
+} from './test-data/mercado-libre-product.entity.data';
 import { mock } from 'test/resources/mocks/mock';
 import { MercadoLibreProductPicture } from 'src/mercado-libre/entity/mercado-libre-product-picture.entity';
 

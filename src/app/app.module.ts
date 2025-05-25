@@ -6,12 +6,16 @@ import configuration from '../config/configuration';
 import { MercadoLibreModule } from 'src/mercado-libre/mercado-libre.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DATA_SOURCE_OPTIONS } from 'src/config/data-source.options';
+import { AuthModule } from 'src/auth/auth.module';
+import { InitialDataModule } from 'src/initial-data/initial-data.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     TypeOrmModule.forRoot(DATA_SOURCE_OPTIONS),
+    InitialDataModule,
     MercadoLibreModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,6 +7,7 @@ const configuration = {
     port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
     version: process.env.SELF_VERSION ?? '-',
   },
+  jwt: { secret: process.env.JWT_SECRET! },
   database: {
     host: process.env.MSSQL_HOST,
     port: parseInt(process.env.MSSQL_PORT || '1433', 10),
@@ -32,7 +33,10 @@ const configuration = {
     message: {
       mlServiceUnavailable: 'MercadoLibre Service is not available',
       mlProductInactive: 'Product not exists or is inactive.',
+      onCreateUser: 'Error on create user.',
+      userAlreadyExists: 'User already exists.',
     },
+    regex: { unique: /\bUNIQUE\b/ },
   },
 };
 

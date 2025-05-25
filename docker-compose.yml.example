@@ -2,6 +2,8 @@ x-ml: &ml-config
   ML_URL: 'https://api.mercadolibre.com'
   ML_ACCESS_TOKEN: ''
 
+x-compose-jwt: &jwt-config
+  JWT_SECRET: 'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.'
 x-compose-mssql: &mssql-config
   MSSQL_PASSWORD: &MSSQL_PASSWORD 'myPassword1234'
   MSSQL_DB: &MSSQL_DB 'pdesa'
@@ -44,7 +46,7 @@ services:
       - .:/app
     environment:
       NODE_ENV: development
-      <<: [*mssql-config, *ml-config]
+      <<: [*mssql-config, *ml-config, *jwt-config]
     restart: always
     depends_on:
       mssql:
