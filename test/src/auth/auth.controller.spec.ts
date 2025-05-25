@@ -2,7 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from 'src/auth/auth.controller';
 import { AuthService } from 'src/auth/auth.service';
 import { mock } from 'test/resources/mocks/mock';
-import { request } from './test-data/auth.controller.spec.data';
+import {
+  request,
+  registerPurchaserDto,
+  registerAdministratorDto,
+} from './test-data/auth.controller.spec.data';
 
 describe('AuthController', () => {
   let module: TestingModule;
@@ -23,6 +27,16 @@ describe('AuthController', () => {
   it('should delegate login to service', async () => {
     await controller.login(request);
     expect(service.login).toHaveBeenCalledWith(request.user);
+  });
+
+  it('should delegate register purchaser to service', async () => {
+    await controller.registerPurchaser(registerPurchaserDto);
+    expect(service.register).toHaveBeenCalledWith(registerPurchaserDto);
+  });
+
+  it('should delegate register administrator to service', async () => {
+    await controller.registerAdministrator(registerAdministratorDto);
+    expect(service.register).toHaveBeenCalledWith(registerAdministratorDto);
   });
 
   it('should delegate profile to service', () => {

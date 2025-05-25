@@ -1,6 +1,7 @@
 import realConfiguration from 'src/config/configuration';
 import type { User } from 'src/user/entity/user.entity';
 import { Role } from 'src/user/enum/role.enum';
+import { UsersQueries } from 'src/user/queries/users.queries';
 import { QueryFailedError } from 'typeorm';
 
 export const username = 'user1';
@@ -42,3 +43,18 @@ export const errors = { userAlreadyExists: 'User already exists', onCreateUser: 
 const uniqueRegex = realConfiguration().error.regex.unique;
 
 export const configuration = () => ({ error: { message: errors, regex: { unique: uniqueRegex } } });
+
+export const users = [
+  { id: '3', username: 'administrator3', password: 'Administrator3!', role: Role.administrator },
+  { id: '4', username: 'administrator4', password: 'Administrator4!', role: Role.administrator },
+  { id: '5', username: 'purchaser5', password: 'Purchaser5!', role: Role.purchaser },
+  { id: '6', username: 'purchaser6', password: 'Purchaser6!', role: Role.purchaser },
+] as Array<User>;
+
+export const undefinedRoleUsersQueries = {} as UsersQueries;
+
+export const usersQueries = undefinedRoleUsersQueries;
+
+export const purchaserUsersQueries = { role: Role.purchaser } as UsersQueries;
+
+export const administratorUsersQueries = { role: Role.administrator } as UsersQueries;

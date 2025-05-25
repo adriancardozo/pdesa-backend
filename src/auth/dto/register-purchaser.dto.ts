@@ -31,7 +31,7 @@ export class RegisterPurchaserDto implements CreateUserDto {
   @IsStrongPassword()
   password: string;
 
-  get role(): Role {
+  get role(): Role.purchaser {
     return Role.purchaser;
   }
 }

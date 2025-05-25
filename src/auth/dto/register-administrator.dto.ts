@@ -31,7 +31,7 @@ export class RegisterAdministratorDto implements CreateUserDto {
   @IsStrongPassword()
   password: string;
 
-  get role(): Role {
+  get role(): Role.administrator {
     return Role.administrator;
   }
 }

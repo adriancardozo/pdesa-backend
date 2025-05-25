@@ -6,6 +6,7 @@ import { UserService } from 'src/user/user.service';
 import { mock } from 'test/resources/mocks/mock';
 import { EntityManager } from 'typeorm';
 import {
+  administratorUsersQueries,
   configuration,
   createdUser,
   createUserDto,
@@ -14,14 +15,19 @@ import {
   notUniqueError,
   passwordHash,
   payload,
+  purchaserUsersQueries,
   savedUser,
+  undefinedRoleUsersQueries,
   uniqueError,
   user,
   username,
+  users,
+  usersQueries,
 } from './test-data/user.service.spec.data';
 import { HashService } from 'src/hash/hash.service';
 import { BadRequestException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { Role } from 'src/user/enum/role.enum';
 
 describe('UserService', () => {
   let module: TestingModule;
@@ -85,6 +91,38 @@ describe('UserService', () => {
     it('should return found user', async () => {
       const result = await service.findOneByPayload(payload, manager);
       expect(result).toEqual(user);
+    });
+  });
+
+  describe('Users', () => {
+    beforeEach(() => {
+      manager.findBy.mockResolvedValue(users);
+    });
+
+    it('should run in transaction', async () => {
+      const transaction = jest.spyOn(transactionService, 'transaction');
+      await service.users(usersQueries, manager);
+      expect(transaction).toHaveBeenCalled();
+    });
+
+    it('should get application users', async () => {
+      await service.users(undefinedRoleUsersQueries, manager);
+      expect(manager.findBy).toHaveBeenCalledWith(User, { role: undefined });
+    });
+
+    it('should get purchaser users', async () => {
+      await service.users(purchaserUsersQueries, manager);
+      expect(manager.findBy).toHaveBeenCalledWith(User, { role: Role.purchaser });
+    });
+
+    it('should get administrator users', async () => {
+      await service.users(administratorUsersQueries, manager);
+      expect(manager.findBy).toHaveBeenCalledWith(User, { role: Role.administrator });
+    });
+
+    it('should return users', async () => {
+      const result = await service.users(usersQueries, manager);
+      expect(result).toEqual(users);
     });
   });
 
