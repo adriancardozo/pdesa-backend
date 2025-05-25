@@ -14,35 +14,44 @@ import { Product } from 'src/product/entity/product.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CONFIG_SERVICE } from 'src/shared/config/config.service';
 import { Configuration } from 'src/config/configuration';
+import { ApiProperty } from '@nestjs/swagger';
 
 const errors: Configuration['error']['message'] = CONFIG_SERVICE.get('error.message')!;
 
 export class MercadoLibreProduct {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   id: string;
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   name: string;
+  @ApiProperty()
   @IsString()
   @IsOptional()
   description?: string;
+  @ApiProperty()
   @IsDateString()
   @IsNotEmpty()
   date_created: Date;
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   keywords: string;
+  @ApiProperty({ type: MercadoLibreProductAttribute, isArray: true })
   @IsArray()
   @ValidateNested({ each: true })
   @IsNotEmpty()
   @Type(() => MercadoLibreProductAttribute)
   attributes: Array<MercadoLibreProductAttribute>;
+  @ApiProperty({ type: MercadoLibreProductPicture, isArray: true })
   @IsArray()
   @ValidateNested({ each: true })
   @IsNotEmpty()
   @Type(() => MercadoLibreProductPicture)
   pictures: Array<MercadoLibreProductPicture>;
+  @ApiProperty({ enum: ['active', 'inactive'] })
   @IsIn(['active', 'inactive'])
   status: 'active' | 'inactive';
 

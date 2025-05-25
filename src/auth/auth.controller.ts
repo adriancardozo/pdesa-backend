@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
@@ -12,6 +12,9 @@ import { RegisterAdministratorDto } from './dto/register-administrator.dto';
 import { RolesGuard } from './guard/roles.guard';
 import { Roles } from './decorator/roles.decorator';
 import { Role } from 'src/user/enum/role.enum';
+import { User } from 'src/user/entity/user.entity';
+import { TransformInterceptor } from 'src/shared/interceptors/transform.interceptor';
+import { UserResponse } from './response/user.response';
 
 @Controller('auth')
 @UsePipes(VALIDATION_PIPE)
@@ -52,8 +55,10 @@ export class AuthController {
   @ApiOperation({ summary: 'Profile', description: `*roles*: **ANY**` })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @ApiResponse({ type: UserResponse })
+  @UseInterceptors(new TransformInterceptor(UserResponse))
   @Get('profile')
-  profile(@Request() req: UserRequest) {
+  profile(@Request() req: UserRequest): User {
     return this.authService.profile(req.user);
   }
 }
