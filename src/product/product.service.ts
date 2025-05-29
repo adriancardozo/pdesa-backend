@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
+import { EntityManager, FindOneOptions } from 'typeorm';
 import { Product } from './entity/product.entity';
 import { TransactionService } from 'src/transaction/transaction.service';
 import { MercadoLibreProductService } from 'src/mercado-libre/mercado-libre-product.service';
@@ -11,9 +11,13 @@ export class ProductService {
     private readonly transactionService: TransactionService,
   ) {}
 
-  async getOrCreateProduct(idMl: string, manager?: EntityManager): Promise<Product> {
+  async getOrCreateProduct(
+    idMl: string,
+    relations: FindOneOptions<Product>['relations'],
+    manager?: EntityManager,
+  ): Promise<Product> {
     return await this.transactionService.transaction(async (manager) => {
-      let product = await this.findProductByIdMl(idMl, manager);
+      let product = await this.findProductByIdMl(idMl, relations, manager);
       if (!product) product = await this.createProduct(idMl, manager);
       return product;
     }, manager);
@@ -26,9 +30,13 @@ export class ProductService {
     }, manager);
   }
 
-  async findProductByIdMl(idMl: string, manager?: EntityManager): Promise<Product | null> {
+  async findProductByIdMl(
+    idMl: string,
+    relations?: FindOneOptions<Product>['relations'],
+    manager?: EntityManager,
+  ): Promise<Product | null> {
     return await this.transactionService.transaction(async (manager) => {
-      return await manager.findOneBy(Product, { idMl });
+      return await manager.findOne(Product, { where: { idMl }, relations });
     }, manager);
   }
 }
