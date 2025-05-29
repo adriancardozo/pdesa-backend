@@ -37,8 +37,8 @@ export class MercadoLibreProduct {
   date_created: Date;
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
-  keywords: string;
+  @IsOptional()
+  keywords?: string;
   @ApiProperty({ type: MercadoLibreProductAttribute, isArray: true })
   @IsArray()
   @ValidateNested({ each: true })
@@ -74,7 +74,7 @@ export class MercadoLibreProduct {
       this.name,
       new Date(this.date_created),
       this.description ?? '',
-      this.keywords,
+      this.keywords ?? '',
       this.pictures.map((picture) => picture.image),
     );
   }

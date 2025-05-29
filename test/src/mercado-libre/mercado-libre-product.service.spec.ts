@@ -7,6 +7,10 @@ import {
   config,
   configuration,
   errors,
+  getProductResult,
+  getProductUrl,
+  idMl,
+  mlNotFoundError,
   query,
   searchResult,
   searchUrl,
@@ -14,7 +18,8 @@ import {
 import { of, throwError } from 'rxjs';
 import { MercadoLibreSearchResult } from 'src/mercado-libre/entity/mercado-libre-search-result.entity';
 import { ValidationService } from 'src/validation/validation.service';
-import { ServiceUnavailableException } from '@nestjs/common';
+import { NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import { MercadoLibreProduct } from 'src/mercado-libre/entity/mercado-libre-product.entity';
 
 describe('MercadoLibreProductService', () => {
   let module: TestingModule;
@@ -51,6 +56,7 @@ describe('MercadoLibreProductService', () => {
         expect(validationService.transform).toHaveBeenCalledWith(
           searchResult.data,
           MercadoLibreSearchResult,
+          'body',
         );
       });
     });
@@ -62,6 +68,47 @@ describe('MercadoLibreProductService', () => {
 
       it('should fail if API fail', async () => {
         await expect(service.search(query)).rejects.toMatchObject(
+          new ServiceUnavailableException(errors.mlServiceUnavailable),
+        );
+      });
+    });
+  });
+
+  describe('Get product', () => {
+    describe('Without fail', () => {
+      beforeEach(() => {
+        httpService.get.mockReturnValue(of(getProductResult));
+      });
+
+      it('should delegate to Mercado Libre API', async () => {
+        await service.getProduct(idMl);
+        expect(httpService.get).toHaveBeenCalledWith(getProductUrl(idMl), config);
+      });
+
+      it('should validate response attributes', async () => {
+        await service.getProduct(idMl);
+        expect(validationService.transform).toHaveBeenCalledWith(
+          getProductResult.data,
+          MercadoLibreProduct,
+          'body',
+        );
+      });
+    });
+
+    describe('With fail', () => {
+      beforeEach(() => {
+        httpService.get.mockReturnValue(throwError(() => new ServiceUnavailableException()));
+      });
+
+      it('should fail with not found if API fail with not found', async () => {
+        httpService.get.mockReturnValue(throwError(() => mlNotFoundError));
+        await expect(service.getProduct(idMl)).rejects.toMatchObject(
+          new NotFoundException(errors.mlProductNotFound),
+        );
+      });
+
+      it('should fail if API fail', async () => {
+        await expect(service.getProduct(idMl)).rejects.toMatchObject(
           new ServiceUnavailableException(errors.mlServiceUnavailable),
         );
       });

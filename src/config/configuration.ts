@@ -35,8 +35,11 @@ const configuration = {
       mlProductInactive: 'Product not exists or is inactive.',
       onCreateUser: 'Error on create user.',
       userAlreadyExists: 'User already exists.',
+      userNotFound: 'User not found.',
+      mlProductNotFound: 'MercadoLibre product not found.',
+      favoriteNotFound: 'Favorite not found.',
     },
-    regex: { unique: /\bUNIQUE\b/ },
+    regex: { unique: /\bUNIQUE\b/, notFound: /not found/ },
   },
 };
 

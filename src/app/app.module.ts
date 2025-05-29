@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DATA_SOURCE_OPTIONS } from 'src/config/data-source.options';
 import { AuthModule } from 'src/auth/auth.module';
 import { InitialDataModule } from 'src/initial-data/initial-data.module';
+import { FavoriteModule } from 'src/favorite/favorite.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { InitialDataModule } from 'src/initial-data/initial-data.module';
     TypeOrmModule.forRoot(DATA_SOURCE_OPTIONS),
     InitialDataModule,
     MercadoLibreModule,
+    FavoriteModule,
     AuthModule,
   ],
   controllers: [AppController],
