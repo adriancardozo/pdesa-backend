@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './entity/user.entity';
-import { EntityManager } from 'typeorm';
+import { EntityManager, FindOneOptions } from 'typeorm';
 import { TransactionService } from 'src/transaction/transaction.service';
 import { HashService } from 'src/hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,6 +21,18 @@ export class UserService {
   ) {
     this.errorRegexes = this.configService.get('error.regex')!;
     this.errors = this.configService.get('error.message')!;
+  }
+
+  async findOneById(
+    id: string,
+    relations: FindOneOptions<User>['relations'],
+    manager?: EntityManager,
+  ): Promise<User> {
+    return await this.transactionService.transaction(async (manager) => {
+      const user = await manager.findOne(User, { where: { id }, relations });
+      if (!user) throw new NotFoundException(this.errors.userNotFound);
+      return user;
+    }, manager);
   }
 
   async findOneByUsername(username: string, manager?: EntityManager): Promise<User | null> {
