@@ -21,6 +21,20 @@ export class FavoriteService {
     private readonly transactionService: TransactionService,
   ) {}
 
+  async getFavorites(userDto: User, manager?: EntityManager): Promise<Array<Favorite>> {
+    return await this.transactionService.transaction(async (manager) => {
+      const user = await this.userService.findOneById(userDto.id, this.userRelations, manager);
+      return user.favorites;
+    }, manager);
+  }
+
+  async getFavorite({ idMl }: IdMlDto, userDto: User, manager?: EntityManager): Promise<Favorite> {
+    return await this.transactionService.transaction(async (manager) => {
+      const user = await this.userService.findOneById(userDto.id, this.userRelations, manager);
+      return user.getFavorite(idMl);
+    }, manager);
+  }
+
   async addFavorite({ idMl }: IdMlDto, userDto: User, manager?: EntityManager): Promise<Favorite> {
     return await this.transactionService.transaction(async (manager) => {
       const product = await this.productService.getOrCreateProduct(idMl, this.productRelations, manager);

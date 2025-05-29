@@ -2,7 +2,7 @@ import realConfiguration from 'src/config/configuration';
 import type { User } from 'src/user/entity/user.entity';
 import { Role } from 'src/user/enum/role.enum';
 import { UsersQueries } from 'src/user/queries/users.queries';
-import { QueryFailedError } from 'typeorm';
+import { FindOneOptions, QueryFailedError } from 'typeorm';
 
 export const username = 'user1';
 
@@ -38,7 +38,11 @@ export const notUniqueError = new QueryFailedError('GENERIC', undefined, {
   name: 'GENERIC',
 });
 
-export const errors = { userAlreadyExists: 'User already exists', onCreateUser: 'Error on create user' };
+export const errors = {
+  userAlreadyExists: 'User already exists',
+  onCreateUser: 'Error on create user',
+  userNotFound: 'User not found.',
+};
 
 const uniqueRegex = realConfiguration().error.regex.unique;
 
@@ -58,3 +62,7 @@ export const usersQueries = undefinedRoleUsersQueries;
 export const purchaserUsersQueries = { role: Role.purchaser } as UsersQueries;
 
 export const administratorUsersQueries = { role: Role.administrator } as UsersQueries;
+
+export const id = payload.id;
+
+export const relations = {} as FindOneOptions<User>['relations'];

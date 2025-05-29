@@ -12,10 +12,12 @@ import {
   createUserDto,
   createUserDtoWithPasswordHash,
   errors,
+  id,
   notUniqueError,
   passwordHash,
   payload,
   purchaserUsersQueries,
+  relations,
   savedUser,
   undefinedRoleUsersQueries,
   uniqueError,
@@ -25,7 +27,7 @@ import {
   usersQueries,
 } from './test-data/user.service.spec.data';
 import { HashService } from 'src/hash/hash.service';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Role } from 'src/user/enum/role.enum';
 
@@ -48,6 +50,35 @@ describe('UserService', () => {
     transactionService = module.get<TransactionService>(TransactionService);
     hashService = module.get<jest.Mocked<HashService>>(HashService);
     service = module.get<UserService>(UserService);
+  });
+
+  describe('Find one by id', () => {
+    beforeEach(() => {
+      manager.findOne.mockResolvedValue(user);
+    });
+
+    it('should run in transaction', async () => {
+      const transaction = jest.spyOn(transactionService, 'transaction');
+      await service.findOneById(id, relations, manager);
+      expect(transaction).toHaveBeenCalled();
+    });
+
+    it('should find user by id', async () => {
+      await service.findOneById(id, relations, manager);
+      expect(manager.findOne).toHaveBeenCalledWith(User, { where: { id }, relations });
+    });
+
+    it('should return found user', async () => {
+      const result = await service.findOneById(id, relations, manager);
+      expect(result).toEqual(user);
+    });
+
+    it('should throw user not found error', async () => {
+      manager.findOne.mockResolvedValue(null);
+      await expect(service.findOneById(id, relations, manager)).rejects.toMatchObject(
+        new NotFoundException(errors.userNotFound),
+      );
+    });
   });
 
   describe('Find one by username', () => {

@@ -46,13 +46,13 @@ export class User extends BaseEntity {
     return favorite;
   }
 
-  protected findFavorite(idMl: string): Favorite | null {
-    return this.favorites.find((favorite) => favorite.idMl === idMl) ?? null;
-  }
-
-  protected getFavorite(idMl: string): Favorite {
+  getFavorite(idMl: string): Favorite {
     const favorite = this.findFavorite(idMl);
     if (!favorite) throw new NotFoundException(errors.favoriteNotFound);
     return favorite;
+  }
+
+  protected findFavorite(idMl: string): Favorite | null {
+    return this.favorites.find((favorite) => favorite.idMl === idMl) ?? null;
   }
 }

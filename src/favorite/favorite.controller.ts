@@ -1,7 +1,8 @@
 import {
-  Body,
   Controller,
   Delete,
+  Get,
+  Param,
   Post,
   Request,
   UseGuards,
@@ -12,7 +13,7 @@ import { FavoriteService } from './favorite.service';
 import { VALIDATION_PIPE } from 'src/validation/pipe/validation.pipe';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { Role } from 'src/user/enum/role.enum';
 import { IdMlDto } from './dto/id-ml.dto';
@@ -30,14 +31,39 @@ export class FavoriteController {
   @ApiBearerAuth()
   @Roles(Role.purchaser)
   @ApiOperation({
+    summary: 'Get favorites',
+    description: `*roles*: **${[Role.purchaser].toString()}**`,
+  })
+  @ApiResponse({ type: FavoriteResponse, isArray: true })
+  @UseInterceptors(new TransformInterceptor(FavoriteResponse))
+  @Get()
+  async getFavorites(@Request() req: UserRequest): Promise<Array<Favorite>> {
+    return await this.favoriteService.getFavorites(req.user);
+  }
+
+  @ApiBearerAuth()
+  @Roles(Role.purchaser)
+  @ApiOperation({
+    summary: 'Get favorite',
+    description: `*roles*: **${[Role.purchaser].toString()}**`,
+  })
+  @ApiResponse({ type: FavoriteResponse })
+  @UseInterceptors(new TransformInterceptor(FavoriteResponse))
+  @Get(':idMl')
+  async getFavorite(@Param() getFavoriteDto: IdMlDto, @Request() req: UserRequest): Promise<Favorite> {
+    return await this.favoriteService.getFavorite(getFavoriteDto, req.user);
+  }
+
+  @ApiBearerAuth()
+  @Roles(Role.purchaser)
+  @ApiOperation({
     summary: 'Add favorite',
     description: `*roles*: **${[Role.purchaser].toString()}**`,
   })
   @ApiResponse({ type: FavoriteResponse })
-  @ApiBody({ type: IdMlDto })
   @UseInterceptors(new TransformInterceptor(FavoriteResponse))
-  @Post()
-  async addFavorite(@Body() addFavoriteDto: IdMlDto, @Request() req: UserRequest): Promise<Favorite> {
+  @Post(':idMl')
+  async addFavorite(@Param() addFavoriteDto: IdMlDto, @Request() req: UserRequest): Promise<Favorite> {
     return await this.favoriteService.addFavorite(addFavoriteDto, req.user);
   }
 
@@ -48,10 +74,12 @@ export class FavoriteController {
     description: `*roles*: **${[Role.purchaser].toString()}**`,
   })
   @ApiResponse({ type: FavoriteResponse })
-  @ApiBody({ type: IdMlDto })
   @UseInterceptors(new TransformInterceptor(FavoriteResponse))
-  @Delete()
-  async deleteFavorite(@Body() deleteFavoriteDto: IdMlDto, @Request() req: UserRequest): Promise<Favorite> {
+  @Delete(':idMl')
+  async deleteFavorite(
+    @Param() deleteFavoriteDto: IdMlDto,
+    @Request() req: UserRequest,
+  ): Promise<Favorite> {
     return await this.favoriteService.deleteFavorite(deleteFavoriteDto, req.user);
   }
 }
