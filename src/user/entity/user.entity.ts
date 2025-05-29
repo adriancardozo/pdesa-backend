@@ -3,7 +3,7 @@ import type { Purchase } from 'src/purchase/entity/purchase.entity';
 import { Role } from '../enum/role.enum';
 import typeorm, { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from 'src/shared/entity/base.entity';
-import { Product } from 'src/product/entity/product.entity';
+import type { Product } from 'src/product/entity/product.entity';
 import { NotFoundException } from '@nestjs/common';
 import { Configuration } from 'src/config/configuration';
 import { CONFIG_SERVICE } from 'src/shared/config/config.service';

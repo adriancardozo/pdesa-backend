@@ -18,7 +18,7 @@ export class ProductService {
   ): Promise<Product> {
     return await this.transactionService.transaction(async (manager) => {
       let product = await this.findProductByIdMl(idMl, relations, manager);
-      if (!product) product = await this.createProduct(idMl, manager);
+      product ??= await this.createProduct(idMl, manager);
       return product;
     }, manager);
   }

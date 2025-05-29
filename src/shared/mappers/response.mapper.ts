@@ -1,7 +1,7 @@
-import { Response } from 'src/shared/responses/response';
+import type { Response } from 'src/shared/responses/response';
 import { ModelEntity } from '../entity/model-entity';
 
-export type Class<T> = { new (...args: any[]): T };
+export type Class<T> = new (...args: any[]) => T;
 
 export class ResponseMapper {
   map<T extends ModelEntity, R extends Response<T>, S extends Class<R>>(source: T, ResponseClass: S): R;

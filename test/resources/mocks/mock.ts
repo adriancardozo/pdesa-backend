@@ -1,6 +1,6 @@
 import { ModuleMocker } from 'jest-mock';
 
-type Class<T> = { new (...args: any[]): T };
+type Class<T> = new (...args: any[]) => T;
 
 const mocker = new ModuleMocker(global);
 

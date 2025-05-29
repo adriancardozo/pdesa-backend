@@ -8,7 +8,7 @@ import { Configuration } from 'src/config/configuration';
 
 @Injectable()
 export class InitialDataService {
-  private errors: Configuration['error']['message'];
+  private readonly errors: Configuration['error']['message'];
 
   constructor(
     private readonly configService: ConfigService,
