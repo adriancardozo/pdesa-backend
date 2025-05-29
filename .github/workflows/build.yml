@@ -1,9 +1,9 @@
 name: Build
 on:
   push:
-    branches: [ "development", "main" ]
+    branches: ['development', 'main', 'feature-*']
   pull_request:
-    branches: [ "development", "main" ]
+    branches: ['development', 'main']
     types: [opened, synchronize, reopened]
 jobs:
   sonarqube:
@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
