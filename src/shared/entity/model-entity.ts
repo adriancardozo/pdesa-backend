@@ -1,1 +1,1 @@
-export class ModelEntity {}
+export abstract class ModelEntity {}
