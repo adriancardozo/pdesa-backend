@@ -12,6 +12,8 @@ import { TransactionService } from 'src/transaction/transaction.service';
 import { TransactionModule } from 'src/transaction/transaction.module';
 import { defaultAdmin } from 'src/config/default-admin';
 import { ValidationModule } from 'src/validation/validation.module';
+import { ConfigService } from '@nestjs/config';
+import { Configuration } from 'src/config/configuration';
 
 @Module({
   imports: [
@@ -26,18 +28,22 @@ import { ValidationModule } from 'src/validation/validation.module';
   providers: [AuthService, LocalStrategy, JwtStrategy],
 })
 export class AuthModule {
+  private readonly errors: Configuration['error']['message'];
+
   constructor(
     private readonly authService: AuthService,
     private readonly transactionService: TransactionService,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.errors = this.configService.getOrThrow('error.message');
+  }
 
   async onModuleInit() {
     await this.transactionService.transaction(async (manager) => {
       try {
         await this.authService.register(defaultAdmin(), manager);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (e) {
-        /* empty */
+      } catch (error) {
+        if (!error.message || this.errors.userAlreadyExists !== error.message) throw error;
       }
     });
   }
