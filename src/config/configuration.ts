@@ -10,7 +10,7 @@ const configuration = {
   jwt: { secret: process.env.JWT_SECRET! },
   database: {
     host: process.env.MSSQL_HOST,
-    port: parseInt(process.env.MSSQL_PORT || '1433', 10),
+    port: parseInt(process.env.MSSQL_PORT ?? '1433', 10),
     username: process.env.MSSQL_USER,
     password: process.env.MSSQL_PASSWORD,
     database: process.env.MSSQL_DB,

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AppService {
-  private version_string: string;
+  private readonly version_string: string;
 
   constructor(private readonly configService: ConfigService) {
     this.version_string = this.configService.get<string>('app.version')!;
