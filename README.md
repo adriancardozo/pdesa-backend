@@ -8,6 +8,12 @@ Install dependencies:
 npm install
 ```
 
+Install development hooks:
+
+```bash
+npm run prepare
+```
+
 Copy `.env.example` file and rename to `.env`.
 Then complete whit environment values
 
