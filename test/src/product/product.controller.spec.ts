@@ -2,20 +2,27 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProductController } from 'src/product/product.controller';
 import { ProductService } from 'src/product/product.service';
 import { mock } from 'test/resources/mocks/mock';
+import { q, request } from './test-data/product.controller.spec.data';
 
 describe('ProductController', () => {
   let module: TestingModule;
   let controller: ProductController;
+  let service: ProductService;
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
       controllers: [ProductController],
-      providers: [ProductService],
     })
       .useMocker(mock)
       .compile();
 
     controller = module.get<ProductController>(ProductController);
+    service = module.get<ProductService>(ProductService);
+  });
+
+  it('should delegate search to service', async () => {
+    await controller.search(q, request);
+    expect(service.search).toHaveBeenCalledWith(q, request.user);
   });
 
   it('should be defined', () => {

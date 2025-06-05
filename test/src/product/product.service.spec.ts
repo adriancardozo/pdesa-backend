@@ -7,8 +7,25 @@ import { TransactionModule } from 'src/transaction/transaction.module';
 import { TransactionService } from 'src/transaction/transaction.service';
 import { mock } from 'test/resources/mocks/mock';
 import { EntityManager } from 'typeorm';
-import { idMl, mlProduct, product, relations } from './test-data/product.service.spce.data';
+import {
+  idMl,
+  emptyMercadoLibreProductsIds,
+  mercadoLibreProductsIds,
+  mergedProducts,
+  mlProduct,
+  product,
+  q,
+  relations,
+  searchResult,
+  user,
+  products,
+  emptyProducts,
+} from './test-data/product.service.spec.data';
 import { MercadoLibreProductService } from 'src/mercado-libre/mercado-libre-product.service';
+import { MercadoLibreProductAdapter } from 'src/product/adapter/mercado-libre-product.adapter';
+import { mockPropertyValue } from 'test/resources/mocks/mock-property-value';
+
+jest.mock('src/product/adapter/mercado-libre-poduct.adapter');
 
 describe('ProductService', () => {
   let module: TestingModule;
@@ -30,6 +47,53 @@ describe('ProductService', () => {
     transactionService = module.get<TransactionService>(TransactionService);
     mercadoLibreProductService =
       module.get<jest.Mocked<MercadoLibreProductService>>(MercadoLibreProductService);
+  });
+
+  describe('Search', () => {
+    let products: Array<jest.Mocked<Product>>;
+    let adapter: jest.Mocked<MercadoLibreProductAdapter>;
+
+    beforeEach(() => {
+      products = [1, 2].map(() => mock(Product));
+      mercadoLibreProductService.search.mockResolvedValue(searchResult);
+      manager.find.mockResolvedValue(products);
+      adapter = mock(MercadoLibreProductAdapter);
+      mockPropertyValue(adapter, 'ids', mercadoLibreProductsIds);
+      adapter.products.mockReturnValue(mergedProducts);
+      (MercadoLibreProductAdapter as jest.Mock).mockReturnValue(adapter);
+    });
+
+    it('should run in transaction', async () => {
+      const transaction = jest.spyOn(transactionService, 'transaction');
+      await service.search(q, user, manager);
+      expect(transaction).toHaveBeenCalled();
+    });
+
+    it('should search Mercado Libre products', async () => {
+      await service.search(q, user, manager);
+      expect(mercadoLibreProductService.search).toHaveBeenCalledWith(q);
+    });
+
+    it('should find already saved products', async () => {
+      await service.search(q, user, manager);
+      expect(manager.find).toHaveBeenCalledWith(Product, { where: mercadoLibreProductsIds, relations });
+    });
+
+    it("should not find already saved products if there aren't Mercado Libre products", async () => {
+      mockPropertyValue(adapter, 'ids', emptyMercadoLibreProductsIds);
+      await service.search(q, user, manager);
+      expect(manager.find).toHaveBeenCalledTimes(0);
+    });
+
+    it('should merge Mercado Libre products and saved products', async () => {
+      await service.search(q, user, manager);
+      expect(adapter.products).toHaveBeenCalledWith(products);
+    });
+
+    it('should return merged products', async () => {
+      const result = await service.search(q, user, manager);
+      expect(result).toEqual(mergedProducts);
+    });
   });
 
   describe('Get or create product', () => {
@@ -99,6 +163,38 @@ describe('ProductService', () => {
     });
   });
 
+  describe('Find products by MercadoLibre ids ', () => {
+    beforeEach(() => {
+      manager.find.mockResolvedValue(products);
+    });
+
+    it('should run in transaction', async () => {
+      const transaction = jest.spyOn(transactionService, 'transaction');
+      await service.findProductsByIdsMl(mercadoLibreProductsIds, relations, manager);
+      expect(transaction).toHaveBeenCalled();
+    });
+
+    it("should not find products by MercadoLibre ids if there aren't ids", async () => {
+      await service.findProductsByIdsMl(emptyMercadoLibreProductsIds, relations, manager);
+      expect(manager.find).toHaveBeenCalledTimes(0);
+    });
+
+    it("should return empty result if there aren't ids", async () => {
+      const result = await service.findProductsByIdsMl(emptyMercadoLibreProductsIds, relations, manager);
+      expect(result).toEqual(emptyProducts);
+    });
+
+    it('should find products by MercadoLibre ids', async () => {
+      await service.findProductsByIdsMl(mercadoLibreProductsIds, relations, manager);
+      expect(manager.find).toHaveBeenCalledWith(Product, { where: mercadoLibreProductsIds, relations });
+    });
+
+    it('should return found products', async () => {
+      const result = await service.findProductsByIdsMl(mercadoLibreProductsIds, relations, manager);
+      expect(result).toEqual(products);
+    });
+  });
+
   describe('Create product', () => {
     beforeEach(() => {
       manager.save.mockResolvedValue(mlProduct.product);
@@ -125,5 +221,8 @@ describe('ProductService', () => {
     expect(service).toBeDefined();
   });
 
-  afterEach(async () => await module.close());
+  afterEach(async () => {
+    await module.close();
+    jest.resetAllMocks();
+  });
 });

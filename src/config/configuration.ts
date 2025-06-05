@@ -38,6 +38,7 @@ const configuration = {
       userNotFound: 'User not found.',
       mlProductNotFound: 'MercadoLibre product not found.',
       favoriteNotFound: 'Favorite not found.',
+      notQueryUser: 'Query user is not setted.',
     },
     regex: { unique: /\bUNIQUE\b/, notFound: /not found/ },
   },
