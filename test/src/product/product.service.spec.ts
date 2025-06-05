@@ -25,7 +25,7 @@ import { MercadoLibreProductService } from 'src/mercado-libre/mercado-libre-prod
 import { MercadoLibreProductAdapter } from 'src/product/adapter/mercado-libre-product.adapter';
 import { mockPropertyValue } from 'test/resources/mocks/mock-property-value';
 
-jest.mock('src/product/adapter/mercado-libre-poduct.adapter');
+jest.mock('src/product/adapter/mercado-libre-product.adapter');
 
 describe('ProductService', () => {
   let module: TestingModule;
