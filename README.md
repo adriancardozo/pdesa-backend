@@ -18,8 +18,11 @@ Copy `.env.example` file and rename to `.env`.
 Then complete whit environment values
 
 ```bash
+ML_CLIENT_ID=<ML_client_id>
+ML_CLIENT_SECRET=<ML_client_secret>
 ML_URL=https://api.mercadolibre.com
 ML_ACCESS_TOKEN=<ML_access_token> # (without Bearer)
+ML_REFRESH_TOKEN=<ML_refresh_token>
 MSSQL_HOST=<mssql_server_url>
 MSSQL_PORT=<mssql_server_port> # (default value is 1433)
 MSSQL_USER=<mssql_username>
@@ -52,8 +55,11 @@ Copy `.env.example` file and rename to `.env`.
 Then complete whit environment values
 
 ```bash
+ML_CLIENT_ID=<ML_client_id>
+ML_CLIENT_SECRET=<ML_client_secret>
 ML_URL=https://api.mercadolibre.com
 ML_ACCESS_TOKEN=<ML_access_token> # (without Bearer)
+ML_REFRESH_TOKEN=<ML_refresh_token>
 MSSQL_HOST=<mssql_server_url>
 MSSQL_PORT=<mssql_server_port> # (default value is 1433)
 MSSQL_USER=<mssql_username>
@@ -97,8 +103,11 @@ Copy docker-compose.yml.example file into a new docker-compose.yml file and set 
 ```yml
 # ...
 x-ml: &ml-config
+  ML_CLIENT_ID: '<ML_client_id>'
+  ML_CLIENT_SECRET: '<ML_client_secret>'
   ML_URL: 'https://api.mercadolibre.com'
   ML_ACCESS_TOKEN: '<ML_access_token>' # (without Bearer)
+  ML_REFRESH_TOKEN: '<ML_refresh_token>'
 # ...
 ```
 

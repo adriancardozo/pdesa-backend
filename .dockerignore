@@ -26,3 +26,5 @@ yarn-error.log*
  
 .gitignore
 README.md
+
+mercado-libre-token.json
