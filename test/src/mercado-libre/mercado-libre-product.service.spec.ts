@@ -12,14 +12,20 @@ import {
   idMl,
   mlNotFoundError,
   query,
+  refreshTokenBody,
+  refreshTokenConfig,
+  refreshTokenResult,
+  refreshTokenUrl,
   searchResult,
   searchUrl,
+  unauthorizedError,
 } from './test-data/mercado-libre-product.service.spec.data';
 import { of, throwError } from 'rxjs';
 import { MercadoLibreSearchResult } from 'src/mercado-libre/entity/mercado-libre-search-result.entity';
 import { ValidationService } from 'src/validation/validation.service';
 import { NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { MercadoLibreProduct } from 'src/mercado-libre/entity/mercado-libre-product.entity';
+import { AxiosResponse } from 'axios';
 
 describe('MercadoLibreProductService', () => {
   let module: TestingModule;
@@ -59,6 +65,25 @@ describe('MercadoLibreProductService', () => {
           'body',
         );
       });
+
+      describe('With authorization fail', () => {
+        beforeEach(() => {
+          httpService.post.mockReturnValue(
+            of({ data: { refresh_token: 'refresh_token', access_token: 'access_token' } } as AxiosResponse),
+          );
+        });
+
+        it('should try refresh token if fails with unauthorized error', async () => {
+          validationService.transform.mockResolvedValue(refreshTokenResult);
+          httpService.get.mockReturnValueOnce(throwError(() => unauthorizedError));
+          await service.search(query);
+          expect(httpService.post).toHaveBeenCalledWith(
+            refreshTokenUrl,
+            refreshTokenBody,
+            refreshTokenConfig,
+          );
+        });
+      });
     });
 
     describe('With fail', () => {
@@ -92,6 +117,25 @@ describe('MercadoLibreProductService', () => {
           MercadoLibreProduct,
           'body',
         );
+      });
+
+      describe('With authorization fail', () => {
+        beforeEach(() => {
+          httpService.post.mockReturnValue(
+            of({ data: { refresh_token: 'refresh_token', access_token: 'access_token' } } as AxiosResponse),
+          );
+        });
+
+        it('should try refresh token if fails with unauthorized error', async () => {
+          validationService.transform.mockResolvedValue(refreshTokenResult);
+          httpService.get.mockReturnValueOnce(throwError(() => unauthorizedError));
+          await service.getProduct(idMl);
+          expect(httpService.post).toHaveBeenCalledWith(
+            refreshTokenUrl,
+            refreshTokenBody,
+            refreshTokenConfig,
+          );
+        });
       });
     });
 

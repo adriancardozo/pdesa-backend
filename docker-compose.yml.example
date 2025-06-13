@@ -1,6 +1,9 @@
 x-ml: &ml-config
+  ML_CLIENT_ID: ''
+  ML_CLIENT_SECRET: ''
   ML_URL: 'https://api.mercadolibre.com'
   ML_ACCESS_TOKEN: ''
+  ML_REFRESH_TOKEN: ''
 
 x-compose-jwt: &jwt-config
   JWT_SECRET: 'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.'
