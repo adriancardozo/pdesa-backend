@@ -1,11 +1,15 @@
 import dotenv from 'dotenv';
+import { version } from 'src/../package.json';
 
 dotenv.config({});
 
 const configuration = {
   app: {
+    title: 'Backend',
+    description: 'Backend API (Prácticas de desarrollo)',
     port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
     version: process.env.SELF_VERSION ?? '-',
+    api_version: process.env.SELF_VERSION ?? version,
   },
   jwt: { secret: process.env.JWT_SECRET! },
   database: {
