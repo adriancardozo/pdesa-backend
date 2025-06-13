@@ -51,4 +51,11 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    files: ['test/**/*.spec.ts'],
+    rules: {
+      '@typescript-eslint/unbound-method': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+    },
+  },
 );

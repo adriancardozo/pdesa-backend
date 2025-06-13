@@ -13,9 +13,4 @@ export class AppController {
   version(): VersionResponse {
     return new VersionResponse(this.appService.version());
   }
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
 }
