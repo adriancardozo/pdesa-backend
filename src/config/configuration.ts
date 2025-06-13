@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import { mlAccessToken } from './ml-access-token';
-import { version } from 'src/../package.json';
 
 dotenv.config({});
 
@@ -18,7 +17,7 @@ const configuration = {
     description: 'Backend API (Prácticas de desarrollo)',
     port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
     version: process.env.SELF_VERSION ?? '-',
-    api_version: process.env.SELF_VERSION ?? version,
+    api_version: process.env.SELF_VERSION ?? '-',
   },
   jwt: { secret: process.env.JWT_SECRET! },
   database: {
