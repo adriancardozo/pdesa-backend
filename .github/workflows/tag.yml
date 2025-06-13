@@ -16,10 +16,12 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: version
         id: version
         run: |
-          echo "TAG_NAME=$(echo "${{ github.head_ref }}" | sed -e 's/^release-//')" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=v$(npm pkg get version | tr -d '"')" >> $GITHUB_OUTPUT
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -54,7 +56,7 @@ jobs:
       - name: Retrieve version
         id: version
         run: |
-          echo "TAG_NAME=$(echo "${{ github.head_ref }}" | sed -e 's/^release-v//')" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=$(npm pkg get version | tr -d '"')" >> $GITHUB_OUTPUT
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
