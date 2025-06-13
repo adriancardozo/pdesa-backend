@@ -1,7 +1,16 @@
 import dotenv from 'dotenv';
+import { mlAccessToken } from './ml-access-token';
 import { version } from 'src/../package.json';
 
 dotenv.config({});
+
+const MERCADO_LIBRE_JSON_PATH = 'mercado-libre-token.json';
+
+const { refresh, token } = mlAccessToken(
+  MERCADO_LIBRE_JSON_PATH,
+  process.env.ML_ACCESS_TOKEN,
+  process.env.ML_REFRESH_TOKEN,
+);
 
 const configuration = {
   app: {
@@ -26,12 +35,14 @@ const configuration = {
     },
   },
   mercado_libre: {
-    url: process.env.ML_URL,
-    axios_config: {
-      headers: {
-        authorization: process.env.ML_ACCESS_TOKEN ? `Bearer ${process.env.ML_ACCESS_TOKEN}` : undefined,
-      },
+    app: { client_id: process.env.ML_CLIENT_ID!, client_secret: process.env.ML_CLIENT_SECRET! },
+    url: process.env.ML_URL!,
+    refresh_token: refresh!,
+    refresh_config: {
+      headers: { accept: 'application/json', 'content-type': 'application/x-www-form-urlencoded' },
     },
+    json_path: MERCADO_LIBRE_JSON_PATH,
+    axios_config: { headers: { authorization: (token ? `Bearer ${token}` : undefined)! } },
   },
   error: {
     message: {
@@ -43,7 +54,7 @@ const configuration = {
       mlProductNotFound: 'MercadoLibre product not found.',
       favoriteNotFound: 'Favorite not found.',
     },
-    regex: { unique: /\bUNIQUE\b/, notFound: /not found/ },
+    regex: { unique: /\bUNIQUE\b/, notFound: /not found/, unauthorized: /unauthorized/ },
   },
 };
 
