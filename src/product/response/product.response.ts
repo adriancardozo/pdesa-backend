@@ -14,7 +14,7 @@ export class ProductResponse extends Response<Product> {
   ml_created_at: string;
   @ApiProperty()
   is_favorite: boolean;
-  @ApiProperty({ isArray: true })
+  @ApiProperty({ type: 'string', isArray: true })
   images: Array<string>;
 
   constructor(product: Product, mapper: ResponseMapper) {

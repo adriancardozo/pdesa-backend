@@ -1,5 +1,5 @@
 import { Favorite } from 'src/favorite/entity/favorite.entity';
-import { product, user } from '../test-data/favorite.service.spec.data';
+import { product, user } from './test-data/favorite.entity.spec.data';
 
 describe('Favorite', () => {
   let favorite: Favorite;

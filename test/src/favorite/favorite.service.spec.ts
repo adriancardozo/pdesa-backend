@@ -5,13 +5,9 @@ import { TransactionModule } from 'src/transaction/transaction.module';
 import { mock } from 'test/resources/mocks/mock';
 import {
   configuration,
-  createdFavorite,
-  deletedFavorite,
-  favorite,
   idMlDto,
   product,
   productRelations,
-  user,
   userDto,
   userRelations,
 } from './test-data/favorite.service.spec.data';
@@ -20,6 +16,7 @@ import { EntityManager } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entity/user.entity';
 import { ProductService } from 'src/product/product.service';
+import { Favorite } from 'src/favorite/entity/favorite.entity';
 
 describe('FavoriteService', () => {
   let module: TestingModule;
@@ -28,6 +25,10 @@ describe('FavoriteService', () => {
   let manager: jest.Mocked<EntityManager>;
   let userService: jest.Mocked<UserService>;
   let productService: jest.Mocked<ProductService>;
+  let user: jest.Mocked<User>;
+  let favorite: jest.Mocked<Favorite>;
+  let createdFavorite: jest.Mocked<Favorite>;
+  let deletedFavorite: jest.Mocked<Favorite>;
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
@@ -42,11 +43,16 @@ describe('FavoriteService', () => {
     transactionService = module.get<TransactionService>(TransactionService);
     userService = module.get<jest.Mocked<UserService>>(UserService);
     productService = module.get<jest.Mocked<ProductService>>(ProductService);
+    user = mock(User);
+    favorite = mock(Favorite);
+    createdFavorite = mock(Favorite);
+    deletedFavorite = mock(Favorite);
+    userService.findOneById.mockResolvedValue(user);
   });
 
   describe('Get favorites', () => {
     beforeEach(() => {
-      userService.findOneById.mockResolvedValue(user);
+      user.favorites = [favorite];
     });
 
     it('should run in transaction', async () => {
@@ -60,6 +66,11 @@ describe('FavoriteService', () => {
       expect(userService.findOneById).toHaveBeenCalledWith(userDto.id, userRelations, manager);
     });
 
+    it('should set query user', async () => {
+      await service.getFavorites(userDto, manager);
+      expect(user.setQueryUser).toHaveBeenCalledWith(user);
+    });
+
     it('should return user favorites', async () => {
       const result = await service.getFavorites(userDto, manager);
       expect(result).toEqual(user.favorites);
@@ -67,12 +78,8 @@ describe('FavoriteService', () => {
   });
 
   describe('Get favorite', () => {
-    let user: jest.Mocked<User>;
-
     beforeEach(() => {
-      user = mock(User);
       user.getFavorite.mockReturnValue(favorite);
-      userService.findOneById.mockResolvedValue(user);
     });
 
     it('should run in transaction', async () => {
@@ -91,6 +98,11 @@ describe('FavoriteService', () => {
       expect(user.getFavorite).toHaveBeenCalledWith(idMlDto.idMl);
     });
 
+    it('should set query user', async () => {
+      await service.getFavorite(idMlDto, userDto, manager);
+      expect(favorite.setQueryUser).toHaveBeenCalledWith(user);
+    });
+
     it('should return favorite', async () => {
       const result = await service.getFavorite(idMlDto, userDto, manager);
       expect(result).toEqual(favorite);
@@ -98,12 +110,8 @@ describe('FavoriteService', () => {
   });
 
   describe('Add favorite', () => {
-    let user: jest.Mocked<User>;
-
     beforeEach(() => {
-      user = mock(User);
       user.addFavorite.mockReturnValue(createdFavorite);
-      userService.findOneById.mockResolvedValue(user);
       productService.getOrCreateProduct.mockResolvedValue(product);
     });
 
@@ -142,6 +150,11 @@ describe('FavoriteService', () => {
       expect(result).toEqual(createdFavorite);
     });
 
+    it('should set query user', async () => {
+      await service.addFavorite(idMlDto, userDto, manager);
+      expect(createdFavorite.setQueryUser).toHaveBeenCalledWith(user);
+    });
+
     it('should can call multiple times without fail', async () => {
       await service.addFavorite(idMlDto, userDto, manager);
       const result = await service.addFavorite(idMlDto, userDto, manager);
@@ -150,12 +163,29 @@ describe('FavoriteService', () => {
   });
 
   describe('Delete favorite', () => {
-    let user: jest.Mocked<User>;
-
     beforeEach(() => {
-      user = mock(User);
       user.deleteFavorite.mockReturnValue(deletedFavorite);
-      userService.findOneById.mockResolvedValue(user);
+      user.addFavorite.mockReturnValue(createdFavorite);
+      productService.getOrCreateProduct.mockResolvedValue(product);
+    });
+
+    it('should get or create product', async () => {
+      await service.deleteFavorite(idMlDto, userDto, manager);
+      expect(productService.getOrCreateProduct).toHaveBeenCalledWith(
+        idMlDto.idMl,
+        productRelations,
+        manager,
+      );
+    });
+
+    it('should add favorite to user', async () => {
+      await service.deleteFavorite(idMlDto, userDto, manager);
+      expect(user.addFavorite).toHaveBeenCalledWith(product);
+    });
+
+    it('should save added favorite', async () => {
+      await service.deleteFavorite(idMlDto, userDto, manager);
+      expect(manager.save).toHaveBeenCalledWith(user);
     });
 
     it('should run in transaction', async () => {
@@ -184,7 +214,18 @@ describe('FavoriteService', () => {
       expect(manager.softRemove).toHaveBeenCalledWith(deletedFavorite);
     });
 
+    it('should set query user', async () => {
+      await service.deleteFavorite(idMlDto, userDto, manager);
+      expect(deletedFavorite.setQueryUser).toHaveBeenCalledWith(user);
+    });
+
     it('should return deleted favorite', async () => {
+      const result = await service.deleteFavorite(idMlDto, userDto, manager);
+      expect(result).toEqual(deletedFavorite);
+    });
+
+    it('should can call multiple times without fail', async () => {
+      await service.deleteFavorite(idMlDto, userDto, manager);
       const result = await service.deleteFavorite(idMlDto, userDto, manager);
       expect(result).toEqual(deletedFavorite);
     });
@@ -194,5 +235,8 @@ describe('FavoriteService', () => {
     expect(service).toBeDefined();
   });
 
-  afterEach(async () => await module.close());
+  afterEach(async () => {
+    jest.resetAllMocks();
+    await module.close();
+  });
 });

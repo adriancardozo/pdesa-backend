@@ -24,6 +24,7 @@ export class FavoriteService {
   async getFavorites(userDto: User, manager?: EntityManager): Promise<Array<Favorite>> {
     return await this.transactionService.transaction(async (manager) => {
       const user = await this.userService.findOneById(userDto.id, this.userRelations, manager);
+      user.setQueryUser(user);
       return user.favorites;
     }, manager);
   }
@@ -31,7 +32,9 @@ export class FavoriteService {
   async getFavorite({ idMl }: IdMlDto, userDto: User, manager?: EntityManager): Promise<Favorite> {
     return await this.transactionService.transaction(async (manager) => {
       const user = await this.userService.findOneById(userDto.id, this.userRelations, manager);
-      return user.getFavorite(idMl);
+      const favorite = user.getFavorite(idMl);
+      favorite.setQueryUser(user);
+      return favorite;
     }, manager);
   }
 
@@ -41,16 +44,19 @@ export class FavoriteService {
       const user = await this.userService.findOneById(userDto.id, this.userRelations, manager);
       const favorite = user.addFavorite(product);
       await manager.save(user);
+      favorite.setQueryUser(user);
       return favorite;
     }, manager);
   }
 
   async deleteFavorite({ idMl }: IdMlDto, userDto: User, manager?: EntityManager): Promise<Favorite> {
     return await this.transactionService.transaction(async (manager) => {
+      await this.addFavorite({ idMl }, userDto, manager);
       const user = await this.userService.findOneById(userDto.id, this.userRelations, manager);
       const favorite = user.deleteFavorite(idMl);
       await manager.save(user);
       await manager.softRemove(favorite);
+      favorite.setQueryUser(user);
       return favorite;
     }, manager);
   }
