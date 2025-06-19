@@ -7,6 +7,8 @@ import type { Product } from 'src/product/entity/product.entity';
 import { NotFoundException } from '@nestjs/common';
 import { Configuration } from 'src/config/configuration';
 import { CONFIG_SERVICE } from 'src/shared/config/config.service';
+import { ReviewType } from 'src/review/enum/review-type.enum';
+import type { Review } from 'src/review/entity/review.entity';
 
 const errors: Configuration['error']['message'] = CONFIG_SERVICE.get('error.message')!;
 
@@ -59,7 +61,32 @@ export class User extends BaseEntity {
     this.favorites.forEach((favorite) => favorite.setQueryUser(user));
   }
 
+  getPurchase(id: string): Purchase {
+    const purchase = this.findPurchase(id);
+    if (!purchase) throw new NotFoundException(errors.purchaseNotFound);
+    return purchase;
+  }
+
+  reviews(review_type?: ReviewType, id?: string): Array<Review> {
+    const entities = this.reviewEntities(review_type).filter((entity) => !id || entity.idMl === id);
+    return entities.filter((entity) => entity.reviewed).map((entity) => entity.getReview());
+  }
+
+  protected reviewEntities(review_type?: ReviewType): Array<Favorite | Purchase> {
+    if (review_type === ReviewType.favorite) {
+      return this.favorites;
+    } else if (review_type === ReviewType.purchase) {
+      return this.purchases;
+    } else {
+      return [...this.favorites, ...this.purchases];
+    }
+  }
+
   protected findFavorite(idMl: string): Favorite | null {
     return this.favorites.find((favorite) => favorite.idMl === idMl) ?? null;
+  }
+
+  protected findPurchase(id: string): Purchase | null {
+    return this.purchases.find((purchase) => purchase.id === id) ?? null;
   }
 }

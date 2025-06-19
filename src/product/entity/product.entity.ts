@@ -3,6 +3,8 @@ import { Configuration } from 'src/config/configuration';
 import type { Favorite } from 'src/favorite/entity/favorite.entity';
 import type { Image } from 'src/image/entity/image.entity';
 import type { Purchase } from 'src/purchase/entity/purchase.entity';
+import type { Review } from 'src/review/entity/review.entity';
+import { ReviewType } from 'src/review/enum/review-type.enum';
 import { CONFIG_SERVICE } from 'src/shared/config/config.service';
 import { BaseEntity } from 'src/shared/entity/base.entity';
 import type { User } from 'src/user/entity/user.entity';
@@ -55,5 +57,20 @@ export class Product extends BaseEntity {
 
   setQueryUser(user: User) {
     this.queryUser = user;
+  }
+
+  reviews(review_type?: ReviewType): Array<Review> {
+    const entities = this.reviewEntities(review_type);
+    return entities.filter((entity) => entity.reviewed).map((entity) => entity.getReview());
+  }
+
+  protected reviewEntities(review_type?: ReviewType): Array<Favorite | Purchase> {
+    if (review_type === ReviewType.favorite) {
+      return this.favorites;
+    } else if (review_type === ReviewType.purchase) {
+      return this.purchases;
+    } else {
+      return [...this.favorites, ...this.purchases];
+    }
   }
 }

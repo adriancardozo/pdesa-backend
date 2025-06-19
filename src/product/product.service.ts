@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { EntityManager, FindOneOptions } from 'typeorm';
 import { Product } from './entity/product.entity';
 import { TransactionService } from 'src/transaction/transaction.service';
@@ -6,9 +6,12 @@ import { MercadoLibreProductService } from 'src/mercado-libre/mercado-libre-prod
 import type { User } from 'src/user/entity/user.entity';
 import { MercadoLibreProductAdapter } from './adapter/mercado-libre-product.adapter';
 import type { IdMl } from './type/id-ml.type';
+import { Configuration } from 'src/config/configuration';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProductService {
+  private readonly errors: Configuration['error']['message'];
   private readonly productRelations: FindOneOptions<Product>['relations'] = {
     images: true,
     favorites: true,
@@ -16,8 +19,11 @@ export class ProductService {
 
   constructor(
     private readonly mercadoLibreProductService: MercadoLibreProductService,
+    private readonly configService: ConfigService,
     private readonly transactionService: TransactionService,
-  ) {}
+  ) {
+    this.errors = this.configService.get('error.message')!;
+  }
 
   async search(q: string, user: User, manager?: EntityManager): Promise<Array<Product>> {
     return await this.transactionService.transaction(async (manager) => {
@@ -53,6 +59,18 @@ export class ProductService {
   ): Promise<Product | null> {
     return await this.transactionService.transaction(async (manager) => {
       return await manager.findOne(Product, { where: { idMl }, relations });
+    }, manager);
+  }
+
+  async getProductByIdMl(
+    idMl: string,
+    relations?: FindOneOptions<Product>['relations'],
+    manager?: EntityManager,
+  ): Promise<Product> {
+    return await this.transactionService.transaction(async (manager) => {
+      const product = await manager.findOne(Product, { where: { idMl }, relations });
+      if (!product) throw new NotFoundException(this.errors.productNotFound);
+      return product;
     }, manager);
   }
 
