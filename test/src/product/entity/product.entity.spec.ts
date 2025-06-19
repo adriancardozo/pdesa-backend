@@ -4,6 +4,7 @@ import { Product } from 'src/product/entity/product.entity';
 import {
   errors,
   productJson,
+  productWithoutFavoritesAttributeJson,
   productWithoutFavoritesJson,
   productWithoutQueryUserJson,
   user,
@@ -12,11 +13,13 @@ import {
 describe('Product', () => {
   let product: Product;
   let productWithoutFavorites: Product;
+  let productWithoutFavoritesAttribute: Product;
   let productWithoutQueryUser: Product;
 
   beforeEach(() => {
     product = plainToInstance(Product, productJson);
     productWithoutFavorites = plainToInstance(Product, productWithoutFavoritesJson);
+    productWithoutFavoritesAttribute = plainToInstance(Product, productWithoutFavoritesAttributeJson);
     productWithoutQueryUser = plainToInstance(Product, productWithoutQueryUserJson);
   });
 
@@ -34,6 +37,11 @@ describe('Product', () => {
 
     it("should return false if it isn't query user's favorite", () => {
       const result = productWithoutFavorites.isFavorite;
+      expect(result).toBeFalsy();
+    });
+
+    it("should return false if product hasn't favorites", () => {
+      const result = productWithoutFavoritesAttribute.isFavorite;
       expect(result).toBeFalsy();
     });
   });

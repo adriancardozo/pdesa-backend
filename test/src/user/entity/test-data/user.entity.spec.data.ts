@@ -35,7 +35,3 @@ export const userWithAFavoriteJson = {
   favorites: [previouslyAddedFavorite],
   purchases: [],
 };
-
-export const favorite = { id: '1' } as Favorite;
-
-export const createdFavorite = favorite;

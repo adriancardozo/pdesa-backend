@@ -7,7 +7,7 @@ import { Configuration } from './config/configuration';
 
 async function bootstrap() {
   const { title, description, api_version, port } = CONFIG_SERVICE.get<Configuration['app']>('app')!;
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: { allowedHeaders: '*' } });
   const config = new DocumentBuilder()
     .setTitle(title)
     .setDescription(description)
