@@ -1,0 +1,6 @@
+{
+  "/products/search?status=active&site_id=MLA&q=zapatillas": "/search/zapatillas",
+  "/products/search?status=active&site_id=MLA&q=": "/-",
+  "/products/search?status=active&site_id=MLA&q=*": "/search_empty",
+  "/products/*": "/product/$1"
+}

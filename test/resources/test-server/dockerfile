@@ -1,0 +1,23 @@
+# Build stage
+FROM node:22.14.0-alpine AS build
+WORKDIR /usr/src/app
+
+# Install dependencies and build project
+COPY package*.json ./
+RUN npm ci --silent
+COPY . .
+
+# Production stage
+FROM node:22.14.0-alpine AS production
+WORKDIR /usr/src/app
+
+# Get image arguments and set build environment variables
+ENV NODE_ENV=production
+
+# Copy build files to production stage
+COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY --from=build /usr/src/app ./
+
+# Expose port 3001 and start application
+EXPOSE 3001
+CMD ["npx", "json-server", "--port", "3001", "--watch", "db.js", "--routes", "routes.json", "--host", "0.0.0.0"]
