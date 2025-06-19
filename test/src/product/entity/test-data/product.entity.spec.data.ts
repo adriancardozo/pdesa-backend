@@ -29,6 +29,14 @@ export const productWithoutFavoritesJson = {
   queryUser: user,
 };
 
+export const productWithoutFavoritesAttributeJson = {
+  id: '2',
+  name: 'product2',
+  description: 'product2',
+  idMl: 'ML222222',
+  queryUser: user,
+};
+
 export const productWithoutQueryUserJson = {
   id: '3',
   name: 'product3',

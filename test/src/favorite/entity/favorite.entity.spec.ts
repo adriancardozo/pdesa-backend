@@ -40,6 +40,12 @@ describe('Favorite', () => {
       const result = favorite.isFavorite;
       expect(result).toBeFalsy();
     });
+
+    it("should return false if user hasn't favorites", () => {
+      user.favorites = undefined as never as Array<Favorite>;
+      const result = favorite.isFavorite;
+      expect(result).toBeFalsy();
+    });
   });
 
   describe('Set query user', () => {
