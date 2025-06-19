@@ -1,6 +1,6 @@
 import { Product } from 'src/product/entity/product.entity';
-import { User } from 'src/user/entity/user.entity';
+import configuration from 'src/config/configuration';
 
-export const user = {} as User;
+export const errors = configuration().error.message;
 
 export const product = { idMl: 'ML123456' } as Product;
