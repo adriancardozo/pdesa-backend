@@ -4,24 +4,27 @@ import { Product } from 'src/product/entity/product.entity';
 import { mock } from 'test/resources/mocks/mock';
 import { User } from 'src/user/entity/user.entity';
 import {
-  createdFavorite,
   deletedFavorite,
   errors,
-  favorite,
   idMl,
   previouslyAddedFavorite,
   userJson,
   userWithAFavoriteJson,
 } from './test-data/user.entity.spec.data';
 import * as FavoriteEntity from 'src/favorite/entity/favorite.entity';
+import { Favorite } from 'src/favorite/entity/favorite.entity';
 
 describe('User', () => {
   let user: User;
   let product: jest.Mocked<Product>;
+  let favorite: jest.Mocked<Favorite>;
+  let createdFavorite: jest.Mocked<Favorite>;
 
   beforeEach(() => {
     user = plainToInstance(User, userJson);
     product = mock(Product);
+    favorite = mock(Favorite);
+    createdFavorite = mock(Favorite);
   });
 
   describe('Add favorite', () => {
@@ -65,10 +68,16 @@ describe('User', () => {
         const result = user.addFavorite(product);
         expect(result).toEqual(createdFavorite);
       });
+
+      afterEach(() => {
+        FavoriteClass.mockRestore();
+        find.mockRestore();
+      });
     });
 
     afterEach(() => {
       jest.resetAllMocks();
+      find.mockRestore();
     });
   });
 
@@ -108,6 +117,7 @@ describe('User', () => {
 
     afterEach(() => {
       jest.resetAllMocks();
+      find.mockRestore();
     });
   });
 
@@ -138,6 +148,32 @@ describe('User', () => {
       it('should throw favorite not found error', () => {
         expect(() => user.getFavorite(idMl)).toThrow(new NotFoundException(errors.favoriteNotFound));
       });
+    });
+
+    afterEach(() => {
+      jest.resetAllMocks();
+      find.mockRestore();
+    });
+  });
+
+  describe('Set query user', () => {
+    let FavoriteClass: jest.SpyInstance;
+    let favorite: Favorite;
+    beforeEach(() => {
+      favorite = { setQueryUser: jest.fn() } as never as Favorite;
+      FavoriteClass = jest.spyOn(FavoriteEntity, 'Favorite');
+      FavoriteClass.mockReturnValue(favorite);
+      user.addFavorite(product);
+    });
+
+    it('should set query user', () => {
+      user.setQueryUser(user);
+      expect(user.queryUser).toEqual(user);
+    });
+
+    it("should set user's favorites query user", () => {
+      user.setQueryUser(user);
+      expect(favorite.setQueryUser).toHaveBeenCalledWith(user);
     });
 
     afterEach(() => {

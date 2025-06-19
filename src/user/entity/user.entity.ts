@@ -31,6 +31,8 @@ export class User extends BaseEntity {
   @OneToMany('Purchase', (purchase: Purchase) => purchase.user, { cascade: true })
   purchases: Array<typeorm.Relation<Purchase>>;
 
+  queryUser: User;
+
   addFavorite(product: Product): Favorite {
     let favorite = this.findFavorite(product.idMl);
     if (!favorite) {
@@ -50,6 +52,11 @@ export class User extends BaseEntity {
     const favorite = this.findFavorite(idMl);
     if (!favorite) throw new NotFoundException(errors.favoriteNotFound);
     return favorite;
+  }
+
+  setQueryUser(user: User) {
+    this.queryUser = user;
+    this.favorites.forEach((favorite) => favorite.setQueryUser(user));
   }
 
   protected findFavorite(idMl: string): Favorite | null {

@@ -13,8 +13,8 @@ export class FavoriteResponse extends Response<Favorite> {
   @ApiProperty()
   ml_created_at: string;
   @ApiProperty()
-  is_favorite: boolean = true;
-  @ApiProperty({ isArray: true })
+  is_favorite: boolean;
+  @ApiProperty({ type: 'string', isArray: true })
   images: Array<string>;
 
   constructor(favorite: Favorite, mapper: ResponseMapper) {
@@ -24,5 +24,6 @@ export class FavoriteResponse extends Response<Favorite> {
     this.description = favorite.product.description;
     this.ml_created_at = favorite.product.mlCreatedAt.toISOString();
     this.images = favorite.product.images.map((image) => image.url);
+    this.is_favorite = favorite.isFavorite;
   }
 }

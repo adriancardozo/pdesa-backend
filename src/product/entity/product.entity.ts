@@ -1,8 +1,14 @@
+import { BadRequestException } from '@nestjs/common';
+import { Configuration } from 'src/config/configuration';
 import type { Favorite } from 'src/favorite/entity/favorite.entity';
 import type { Image } from 'src/image/entity/image.entity';
 import type { Purchase } from 'src/purchase/entity/purchase.entity';
+import { CONFIG_SERVICE } from 'src/shared/config/config.service';
 import { BaseEntity } from 'src/shared/entity/base.entity';
+import type { User } from 'src/user/entity/user.entity';
 import typeorm, { Column, Entity, OneToMany } from 'typeorm';
+
+const errors = CONFIG_SERVICE.get<Configuration['error']['message']>('error.message')!;
 
 @Entity()
 export class Product extends BaseEntity {
@@ -23,6 +29,13 @@ export class Product extends BaseEntity {
   @OneToMany('Favorite', (favorite: Favorite) => favorite.product, { cascade: true })
   favorites: Array<typeorm.Relation<Favorite>>;
 
+  queryUser: User;
+
+  get isFavorite(): boolean {
+    if (!this.queryUser) throw new BadRequestException(errors.notQueryUser);
+    return this.favorites?.some((favorite) => favorite.userId === this.queryUser.id) ?? false;
+  }
+
   constructor(
     idMl: string,
     name: string,
@@ -38,5 +51,9 @@ export class Product extends BaseEntity {
     this.description = description;
     this.keywords = keywords;
     this.images = images;
+  }
+
+  setQueryUser(user: User) {
+    this.queryUser = user;
   }
 }
