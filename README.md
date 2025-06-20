@@ -100,6 +100,11 @@ cd pdesa-backend/
 
 Copy docker-compose.yml.example file into a new docker-compose.yml file and set secret environment variables
 
+<blockquote>
+<b>NOTE</b>
+<p>If you want test latest production images copy <code>docker-compose.production.yml.example</code> into <code>docker-compose.production.yml</code> instead and follow the same steps</p>
+</blockquote>
+
 ```yml
 # ...
 x-ml: &ml-config
