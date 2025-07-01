@@ -13,6 +13,7 @@ import { Observable, throwError } from 'rxjs';
 import { EndCollectArgs } from './type/end-collect-args.type';
 import { CollectLabels } from './type/collect-labels.type';
 import { MetricsDefaultOptions } from './type/metrics-default-options.type';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class MetricsService {
@@ -57,7 +58,8 @@ export class MetricsService {
     if (endHistogramObserve) endHistogramObserve(labels);
   }
 
-  async metrics(): Promise<string> {
-    return await this.register.metrics();
+  async metrics(req: Request, res: Response): Promise<void> {
+    res.set('Content-Type', this.contentType);
+    res.end(await this.register.metrics());
   }
 }

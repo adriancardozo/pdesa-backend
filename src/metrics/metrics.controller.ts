@@ -8,7 +8,6 @@ export class MetricsController {
 
   @Get()
   async metrics(@Request() req: ExpressRequest, @Response() res: ExpressResponse): Promise<void> {
-    res.set('Content-Type', this.metricsService.contentType);
-    res.end(await this.metricsService.metrics());
+    await this.metricsService.metrics(req, res);
   }
 }
