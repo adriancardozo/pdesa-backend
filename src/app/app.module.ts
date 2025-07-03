@@ -10,6 +10,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { InitialDataModule } from 'src/initial-data/initial-data.module';
 import { FavoriteModule } from 'src/favorite/favorite.module';
 import { ReviewModule } from 'src/review/review.module';
+import { MetricsModule } from 'src/metrics/metrics.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ReviewModule } from 'src/review/review.module';
     FavoriteModule,
     AuthModule,
     ReviewModule,
+    MetricsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

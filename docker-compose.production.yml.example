@@ -40,13 +40,9 @@ services:
       - pdesa
 
   backend:
-    build:
-      context: .
-      dockerfile: dockerfile
+    image: 'ghcr.io/adriancardozo/pdesa-backend:latest'
     ports:
       - '3000:3000'
-    volumes:
-      - .:/app
     environment:
       NODE_ENV: development
       <<: [*mssql-config, *ml-config, *jwt-config]
@@ -58,12 +54,7 @@ services:
       - pdesa
 
   frontend:
-    build:
-      context: ../pdesa-frontend
-      dockerfile: dockerfile
-      args:
-        VITE_SELF_VERSION: '-'
-        VITE_BACKEND_URL: *BACKEND_URL
+    image: 'ghcr.io/adriancardozo/pdesa-frontend:latest'
     ports:
       - '80:80'
     environment:

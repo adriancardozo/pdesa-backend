@@ -11,8 +11,13 @@ const { refresh, token } = mlAccessToken(
   process.env.ML_REFRESH_TOKEN,
 );
 
+const app_name = 'pdesa_backend';
+
+const metrics_labels = ['method', 'path'];
+
 const configuration = {
   app: {
+    name: app_name,
     title: 'Backend',
     description: 'Backend API (Prácticas de desarrollo)',
     port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
@@ -42,6 +47,31 @@ const configuration = {
     },
     json_path: MERCADO_LIBRE_JSON_PATH,
     axios_config: { headers: { authorization: (token ? `Bearer ${token}` : undefined)! } },
+  },
+  metrics: {
+    app: app_name,
+    options: {
+      failsCounter: {
+        name: `${app_name}_requests_fails_total`,
+        help: 'Total number of request fails',
+        labelNames: metrics_labels,
+      },
+      counter: {
+        name: `${app_name}_requests_total`,
+        help: 'Total number of requests',
+        labelNames: metrics_labels,
+      },
+      gauge: {
+        name: `${app_name}_requests_time`,
+        help: 'Time of requests',
+        labelNames: metrics_labels,
+      },
+      histogram: {
+        name: `${app_name}_requests_time_histogram`,
+        help: 'Time of requests histogram',
+        labelNames: metrics_labels,
+      },
+    },
   },
   error: {
     message: {

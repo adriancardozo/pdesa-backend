@@ -15,6 +15,7 @@ import { Role } from 'src/user/enum/role.enum';
 import { User } from 'src/user/entity/user.entity';
 import { TransformInterceptor } from 'src/shared/interceptors/transform.interceptor';
 import { UserResponse } from './response/user.response';
+import { MetricsInterceptor } from 'src/metrics/interceptor/metrics.interceptor';
 
 @Controller('auth')
 @UsePipes(VALIDATION_PIPE)
@@ -24,6 +25,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Login' })
   @ApiBody({ type: LoginDto })
   @ApiResponse({ type: TokenResponse })
+  @UseInterceptors(MetricsInterceptor)
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req: UserRequest): Promise<TokenResponse> {

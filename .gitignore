@@ -55,6 +55,10 @@ pids
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+docker-compose.e2e-test.yml
+docker-compose.production.yml
 docker-compose.yml
 
 mercado-libre-token.json
+
+/grafana-data

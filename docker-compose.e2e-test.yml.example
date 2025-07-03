@@ -1,7 +1,7 @@
 x-ml: &ml-config
   ML_CLIENT_ID: ''
   ML_CLIENT_SECRET: ''
-  ML_URL: 'https://api.mercadolibre.com'
+  ML_URL: 'http://mercado-libre:3001'
   ML_ACCESS_TOKEN: ''
   ML_REFRESH_TOKEN: ''
 
@@ -36,6 +36,18 @@ services:
       ACCEPT_EULA: 'Y'
       MSSQL_SA_PASSWORD: *MSSQL_PASSWORD
       MSSQL_DB: *MSSQL_DB
+    networks:
+      - pdesa
+
+  mercado-libre:
+    build:
+      context: ./test/resources/test-server
+      dockerfile: dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: development
+    restart: always
     networks:
       - pdesa
 
