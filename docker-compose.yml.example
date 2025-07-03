@@ -10,7 +10,7 @@ x-compose-jwt: &jwt-config
 x-compose-mssql: &mssql-config
   MSSQL_PASSWORD: &MSSQL_PASSWORD 'myPassword1234'
   MSSQL_DB: &MSSQL_DB 'pdesa'
-  MSSQL_HOST: 'mssql'
+  MSSQL_HOST: 'mssql_grupo8'
   MSSQL_PORT: '1433'
   MSSQL_USER: 'sa'
   MSSQL_SYNCHRONIZE: 'true'
@@ -20,7 +20,28 @@ x-compose-mssql: &mssql-config
 x-compose-backend-url: &BACKEND_URL http://localhost:3000/
 
 services:
-  mssql:
+  prometheus_grupo8:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - pdesa
+
+  grafana_grupo8:
+    image: grafana/grafana-oss:latest
+    ports:
+      - 3002:3000
+    restart: unless-stopped
+    volumes:
+      - ./grafana-data:/var/lib/grafana
+    networks:
+      - pdesa
+
+  mssql_grupo8:
     image: 'mcr.microsoft.com/mssql/server@sha256:ea73825f3d88a23c355ac2f9fdc6bd960fec90171c12c572109b36a558f77bb8'
     ports:
       - '1433:1433'
@@ -39,25 +60,23 @@ services:
     networks:
       - pdesa
 
-  backend:
+  backend_grupo8:
     build:
       context: .
       dockerfile: dockerfile
     ports:
       - '3000:3000'
-    volumes:
-      - .:/app
     environment:
       NODE_ENV: development
       <<: [*mssql-config, *ml-config, *jwt-config]
     restart: always
     depends_on:
-      mssql:
+      mssql_grupo8:
         condition: service_healthy
     networks:
       - pdesa
 
-  frontend:
+  frontend_grupo8:
     build:
       context: ../pdesa-frontend
       dockerfile: dockerfile

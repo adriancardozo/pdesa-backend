@@ -6,7 +6,7 @@ export const options = {
   duration: '300s',
 };
 
-const url = __ENV.BACKEND_URL ?? 'http://backend:3000';
+const url = __ENV.BACKEND_URL ?? 'http://backend_grupo8:3000';
 const user = {
   username: __ENV.USER ?? 'purchaser',
   password: __ENV.PASSWORD ?? 'Purchaser1234!',
