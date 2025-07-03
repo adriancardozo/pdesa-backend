@@ -9,6 +9,7 @@ import { DATA_SOURCE_OPTIONS } from 'src/config/data-source.options';
 import { AuthModule } from 'src/auth/auth.module';
 import { InitialDataModule } from 'src/initial-data/initial-data.module';
 import { FavoriteModule } from 'src/favorite/favorite.module';
+import { MetricsModule } from 'src/metrics/metrics.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FavoriteModule } from 'src/favorite/favorite.module';
     MercadoLibreModule,
     FavoriteModule,
     AuthModule,
+    MetricsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

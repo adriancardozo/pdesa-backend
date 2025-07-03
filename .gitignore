@@ -60,3 +60,5 @@ docker-compose.production.yml
 docker-compose.yml
 
 mercado-libre-token.json
+
+/grafana-data
