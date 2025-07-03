@@ -1,0 +1,17 @@
+{
+  "setupFilesAfterEnv": [
+    "<rootDir>/test/resources/mocks/mock-data-source.ts",
+    "<rootDir>/test/resources/mocks/mock-env.ts"
+  ],
+  "moduleNameMapper": {
+    "^src/(.*)$": "<rootDir>/src/$1",
+    "^test/(.*)$": "<rootDir>/test/$1"
+  },
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "../../",
+  "testEnvironment": "node",
+  "testRegex": "test/integration/.*\\.integration-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  }
+}
