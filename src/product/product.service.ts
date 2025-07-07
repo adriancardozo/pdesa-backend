@@ -27,6 +27,17 @@ export class ProductService {
     }, manager);
   }
 
+  async product(idMl: string, user: User, manager?: EntityManager): Promise<Product> {
+    return await this.transactionService.transaction(async (manager) => {
+      const adapter = new MercadoLibreProductAdapter(
+        [await this.mercadoLibreProductService.getProduct(idMl)],
+        user,
+      );
+      const product = await this.findProductByIdMl(idMl, this.productRelations, manager);
+      return adapter.products(product ? [product] : [])[0];
+    }, manager);
+  }
+
   async getOrCreateProduct(
     idMl: string,
     relations: FindOneOptions<Product>['relations'],

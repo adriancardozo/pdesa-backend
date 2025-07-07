@@ -1,5 +1,5 @@
 import { Favorite } from 'src/favorite/entity/favorite.entity';
-import type { Purchase } from 'src/purchase/entity/purchase.entity';
+import { Purchase } from 'src/purchase/entity/purchase.entity';
 import { Role } from '../enum/role.enum';
 import typeorm, { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from 'src/shared/entity/base.entity';
@@ -52,6 +52,12 @@ export class User extends BaseEntity {
     const favorite = this.findFavorite(idMl);
     if (!favorite) throw new NotFoundException(errors.favoriteNotFound);
     return favorite;
+  }
+
+  purchase(product: Product, amount: number): Purchase {
+    const purchase = new Purchase(amount, this, product);
+    this.purchases.push(purchase);
+    return purchase;
   }
 
   setQueryUser(user: User) {

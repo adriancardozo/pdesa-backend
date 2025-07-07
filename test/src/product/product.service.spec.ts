@@ -96,6 +96,58 @@ describe('ProductService', () => {
     });
   });
 
+  describe('Product', () => {
+    let product: jest.Mocked<Product>;
+    let foundProduct: jest.Mocked<Product>;
+    let adapter: jest.Mocked<MercadoLibreProductAdapter>;
+
+    beforeEach(() => {
+      product = mock(Product);
+      foundProduct = mock(Product);
+      mercadoLibreProductService.getProduct.mockResolvedValue(mlProduct);
+      adapter = mock(MercadoLibreProductAdapter);
+      adapter.products.mockReturnValue([product]);
+      (MercadoLibreProductAdapter as jest.Mock).mockReturnValue(adapter);
+    });
+
+    it('should run in transaction', async () => {
+      const transaction = jest.spyOn(transactionService, 'transaction');
+      await service.product(idMl, user, manager);
+      expect(transaction).toHaveBeenCalled();
+    });
+
+    it('should get Mercado Libre product', async () => {
+      await service.product(idMl, user, manager);
+      expect(mercadoLibreProductService.getProduct).toHaveBeenCalledWith(idMl);
+    });
+
+    it('should find product', async () => {
+      await service.product(idMl, user, manager);
+      expect(manager.findOne).toHaveBeenCalledWith(Product, { where: { idMl }, relations });
+    });
+
+    it('should adapt product', async () => {
+      await service.product(idMl, user, manager);
+      expect(adapter.products).toHaveBeenCalledWith([]);
+    });
+
+    it('should return product', async () => {
+      const result = await service.product(idMl, user, manager);
+      expect(result).toEqual(product);
+    });
+
+    describe('If product exists', () => {
+      beforeEach(() => {
+        manager.findOne.mockResolvedValue(foundProduct);
+      });
+
+      it('should adapt found product', async () => {
+        await service.product(idMl, user, manager);
+        expect(adapter.products).toHaveBeenCalledWith([foundProduct]);
+      });
+    });
+  });
+
   describe('Get or create product', () => {
     beforeEach(() => {
       manager.findOne.mockResolvedValue(product);

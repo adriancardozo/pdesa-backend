@@ -15,6 +15,8 @@ export const userJson = {
   purchases: [],
 };
 
+export const amount = 1;
+
 export const previouslyAddedFavorite = { id: '2', idMl: 'MLA2222222' } as Favorite;
 
 export const idMl = previouslyAddedFavorite.idMl;

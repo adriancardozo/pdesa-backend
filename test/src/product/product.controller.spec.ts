@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProductController } from 'src/product/product.controller';
 import { ProductService } from 'src/product/product.service';
 import { mock } from 'test/resources/mocks/mock';
-import { q, request } from './test-data/product.controller.spec.data';
+import { productParam, q, request } from './test-data/product.controller.spec.data';
 
 describe('ProductController', () => {
   let module: TestingModule;
@@ -23,6 +23,11 @@ describe('ProductController', () => {
   it('should delegate search to service', async () => {
     await controller.search(q, request);
     expect(service.search).toHaveBeenCalledWith(q, request.user);
+  });
+
+  it('should delegate product to service', async () => {
+    await controller.product(productParam, request);
+    expect(service.product).toHaveBeenCalledWith(productParam.ml_id, request.user);
   });
 
   it('should be defined', () => {
