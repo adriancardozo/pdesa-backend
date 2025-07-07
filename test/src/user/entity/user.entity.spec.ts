@@ -10,20 +10,25 @@ import {
   previouslyAddedFavorite,
   userJson,
   userWithAFavoriteJson,
+  amount,
 } from './test-data/user.entity.spec.data';
 import * as FavoriteEntity from 'src/favorite/entity/favorite.entity';
 import { Favorite } from 'src/favorite/entity/favorite.entity';
+import * as PurchaseEntity from 'src/purchase/entity/purchase.entity';
+import { Purchase } from 'src/purchase/entity/purchase.entity';
 
 describe('User', () => {
   let user: User;
   let product: jest.Mocked<Product>;
   let favorite: jest.Mocked<Favorite>;
+  let purchase: jest.Mocked<Purchase>;
   let createdFavorite: jest.Mocked<Favorite>;
 
   beforeEach(() => {
     user = plainToInstance(User, userJson);
     product = mock(Product);
     favorite = mock(Favorite);
+    purchase = mock(Purchase);
     createdFavorite = mock(Favorite);
   });
 
@@ -174,6 +179,34 @@ describe('User', () => {
     it("should set user's favorites query user", () => {
       user.setQueryUser(user);
       expect(favorite.setQueryUser).toHaveBeenCalledWith(user);
+    });
+
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+  });
+
+  describe('Purchase', () => {
+    let PurchaseClass: jest.SpyInstance;
+
+    beforeEach(() => {
+      PurchaseClass = jest.spyOn(PurchaseEntity, 'Purchase');
+      PurchaseClass.mockReturnValue(purchase);
+    });
+
+    it('should create purchase', () => {
+      user.purchase(product, amount);
+      expect(PurchaseClass).toHaveBeenCalledWith(amount, user, product);
+    });
+
+    it('should add purchase to user purchases', () => {
+      user.purchase(product, amount);
+      expect(user.purchases).toMatchObject([purchase]);
+    });
+
+    it('should return created purchase', () => {
+      const result = user.purchase(product, amount);
+      expect(result).toEqual(purchase);
     });
 
     afterEach(() => {

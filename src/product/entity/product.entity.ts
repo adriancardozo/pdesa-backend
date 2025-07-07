@@ -29,6 +29,8 @@ export class Product extends BaseEntity {
   @OneToMany('Favorite', (favorite: Favorite) => favorite.product, { cascade: true })
   favorites: Array<typeorm.Relation<Favorite>>;
 
+  price: number = 25;
+
   queryUser: User;
 
   get isFavorite(): boolean {
