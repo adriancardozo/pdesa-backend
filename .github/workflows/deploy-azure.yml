@@ -12,42 +12,35 @@ jobs:
   deploy-azure:
     runs-on: ubuntu-latest
     steps:
-    - name: Retrieve image name
-      run: |
-        echo ${{ env.IMAGE_NAME }}
-        echo ${{ env.APP_SETTINGS }}
-  # deploy-azure:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-  #     - name: Retrieve version
-  #       id: version
-  #       run: |
-  #         echo "TAG_NAME=$(npm pkg get version | tr -d '"')" >> $GITHUB_OUTPUT
-  #     - name: 'Login with Azure'
-  #       uses: azure/login@v1
-  #       with:
-  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
-  #     - name: 'Pull and push image'
-  #       uses: azure/docker-login@v1
-  #       with:
-  #         login-server: ${{ format('https://{0}', vars.REGISTRY_URL) }}
-  #         username: ${{ vars.REGISTRY_USERNAME }}
-  #         password: ${{ secrets.REGISTRY_PASSWORD }}
-  #     - run: |
-  #         docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.TAG_NAME }}
-  #         docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.TAG_NAME }} ${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.TAG_NAME }}
-  #         docker push ${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.TAG_NAME }}
-  #     - uses: azure/webapps-deploy@v2
-  #       with:
-  #         app-name: ${{ vars.WEBAPP_NAME }}
-  #         images: ${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.TAG_NAME }}
-  #     - uses: azure/appservice-settings@v1
-  #       with:
-  #         app-name: ${{ vars.WEBAPP_NAME }}
-  #         app-settings-json: ${{ vars.APP_SETTINGS }}
-  #         id: settings
-  #     - name: 'Azure logout'
-  #       run: |
-  #         az logout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Retrieve version
+        id: version
+        run: |
+          echo "TAG_NAME=$(npm pkg get version | tr -d '"')" >> $GITHUB_OUTPUT
+      - name: 'Login with Azure'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: 'Pull and push image'
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ format('https://{0}', vars.REGISTRY_URL) }}
+          username: ${{ vars.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.TAG_NAME }}
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.TAG_NAME }} ${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.TAG_NAME }}
+          docker push ${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.TAG_NAME }}
+      - uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ vars.WEBAPP_NAME }}
+          images: ${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.TAG_NAME }}
+      - uses: azure/appservice-settings@v1
+        with:
+          app-name: ${{ vars.WEBAPP_NAME }}
+          app-settings-json: ${{ env.APP_SETTINGS }}
+          id: settings
+      - name: 'Azure logout'
+        run: |
+          az logout
