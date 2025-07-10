@@ -7,7 +7,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  APP_SETTINGS: ${{ format(vars.APP_SETTINGS, secrets.REGISTRY_PASSWORD, vars.REGISTRY_URL, vars.REGISTRY_USERNAME, vars.ML_CLIENT_ID, secrets.ML_CLIENT_SECRET, vars.ML_URL, secrets.ML_ACCESS_TOKEN, secrets.ML_REFRESH_TOKEN, secrets.JWT_SECRET, secrets.MSSQL_PASSWORD, vars.MSSQL_DB, vars.MSSQL_HOST, vars.MSSQL_PORT, vars.MSSQL_USER, vars.MSSQL_SYNCHRONIZE, vars.MSSQL_LOGGING, vars.MSSQL_ENCRYPT, vars.MSSQL_TRUST_CERT) }}
+  APP_SETTINGS: ${{ format(vars.APP_SETTINGS, vars.REGISTRY_URL, vars.REGISTRY_URL, vars.REGISTRY_USERNAME, vars.ML_CLIENT_ID, secrets.ML_CLIENT_SECRET, vars.ML_URL, secrets.ML_ACCESS_TOKEN, secrets.ML_REFRESH_TOKEN, secrets.JWT_SECRET, secrets.MSSQL_PASSWORD, vars.MSSQL_DB, vars.MSSQL_HOST, vars.MSSQL_PORT, vars.MSSQL_USER, vars.MSSQL_SYNCHRONIZE, vars.MSSQL_LOGGING, vars.MSSQL_ENCRYPT, vars.MSSQL_TRUST_CERT) }}
 jobs:
   deploy-azure:
     runs-on: ubuntu-latest
