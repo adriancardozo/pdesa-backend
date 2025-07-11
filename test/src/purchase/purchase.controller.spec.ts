@@ -20,6 +20,11 @@ describe('PurchaseController', () => {
     service = module.get<PurchaseService>(PurchaseService);
   });
 
+  it('should delegate purchases to service', async () => {
+    await controller.purchases(request);
+    expect(service.purchases).toHaveBeenCalledWith(request.user);
+  });
+
   it('should delegate purchase to service', async () => {
     await controller.purchase(purchaseParam, dto, request);
     expect(service.purchase).toHaveBeenCalledWith(purchaseParam, dto, request.user);

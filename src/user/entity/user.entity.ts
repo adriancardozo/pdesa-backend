@@ -62,7 +62,8 @@ export class User extends BaseEntity {
 
   setQueryUser(user: User) {
     this.queryUser = user;
-    this.favorites.forEach((favorite) => favorite.setQueryUser(user));
+    this.favorites?.forEach((favorite) => favorite.setQueryUser(user));
+    this.purchases?.forEach((purchase) => purchase.setQueryUser(user));
   }
 
   protected findFavorite(idMl: string): Favorite | null {
