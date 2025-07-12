@@ -11,7 +11,11 @@ export class PurchaseResponse extends Response<Purchase> {
   @ApiProperty()
   price: number;
   @ApiProperty()
+  final_price: number;
+  @ApiProperty()
   amount: number;
+  @ApiProperty({ example: new Date().toISOString() })
+  created_at: string;
   @ApiProperty({ type: ProductResponse })
   product: ProductResponse;
   @ApiProperty({ type: ReviewResponse })
@@ -21,7 +25,9 @@ export class PurchaseResponse extends Response<Purchase> {
     super(purchase, mapper);
     this.id = purchase.id;
     this.price = purchase.price;
+    this.final_price = purchase.finalPrice;
     this.amount = purchase.amount;
+    this.created_at = purchase.createdAt.toISOString();
     this.product = mapper.map(purchase.product, ProductResponse);
     this.review = mapper.map(purchase.review, ReviewResponse);
   }

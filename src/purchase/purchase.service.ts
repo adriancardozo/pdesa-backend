@@ -22,6 +22,14 @@ export class PurchaseService {
     private readonly transactionService: TransactionService,
   ) {}
 
+  async purchases(userDto: User, manager?: EntityManager): Promise<Array<Purchase>> {
+    return await this.transactionService.transaction(async (manager) => {
+      const user = await this.userService.findOneById(userDto.id, this.userRelations, manager);
+      user.setQueryUser(user);
+      return user.purchases;
+    }, manager);
+  }
+
   async purchase(
     { idMl }: IdMlDto,
     { amount }: PurchaseDto,

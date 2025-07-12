@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Post,
   Request,
@@ -27,6 +28,19 @@ import { PurchaseDto } from './dto/purchase.dto';
 @UsePipes(VALIDATION_PIPE)
 export class PurchaseController {
   constructor(private readonly purchaseService: PurchaseService) {}
+
+  @ApiBearerAuth()
+  @Roles(Role.purchaser)
+  @ApiOperation({
+    summary: 'Get purchases',
+    description: `*roles*: **${[Role.purchaser].toString()}**`,
+  })
+  @ApiResponse({ type: PurchaseResponse, isArray: true })
+  @UseInterceptors(new TransformInterceptor(PurchaseResponse))
+  @Get()
+  async purchases(@Request() req: UserRequest): Promise<Array<Purchase>> {
+    return await this.purchaseService.purchases(req.user);
+  }
 
   @ApiBearerAuth()
   @Roles(Role.purchaser)
