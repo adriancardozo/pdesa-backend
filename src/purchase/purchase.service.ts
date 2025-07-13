@@ -12,9 +12,12 @@ import { PurchaseDto } from './dto/purchase.dto';
 @Injectable()
 export class PurchaseService {
   private readonly userRelations: FindOneOptions<User>['relations'] = {
-    purchases: { product: { images: true } },
+    purchases: { product: { images: true, favorites: true } },
   };
-  private readonly productRelations: FindOneOptions<Product>['relations'] = { images: true };
+  private readonly productRelations: FindOneOptions<Product>['relations'] = {
+    images: true,
+    favorites: true,
+  };
 
   constructor(
     private readonly productService: ProductService,
