@@ -6,8 +6,8 @@ export const amount = 1;
 
 export const purchaseDto = { amount };
 
-export const productRelations = { images: true };
+export const productRelations = { images: true, favorites: true };
 
-export const userRelations = { purchases: { product: { images: true } } };
+export const userRelations = { purchases: { product: { images: true, favorites: true } } };
 
 export const userDto = { id: '1' } as User;
