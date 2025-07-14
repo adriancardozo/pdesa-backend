@@ -124,7 +124,7 @@ docker compose -f 'docker-compose.yml' up -d --build
 
 And then go to http://localhost to open frontend or http://localhost:3000/docs to open backend Swagger UI
 
-### App usage
+## App usage
 
 To use app you will need log in with username and password. You can use following test credentials for this:
 
