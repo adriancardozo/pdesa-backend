@@ -38,6 +38,14 @@ export class Product extends BaseEntity {
     return this.favorites?.some((favorite) => favorite.userId === this.queryUser.id) ?? false;
   }
 
+  get amountFavorites(): number {
+    return this.favorites.length;
+  }
+
+  get amountPurchases(): number {
+    return this.purchases.reduce((sum, purchase) => sum + purchase.amount, 0);
+  }
+
   constructor(
     idMl: string,
     name: string,
@@ -55,7 +63,8 @@ export class Product extends BaseEntity {
     this.images = images;
   }
 
-  setQueryUser(user: User) {
+  setQueryUser(user: User): Product {
     this.queryUser = user;
+    return this;
   }
 }

@@ -30,7 +30,7 @@ export class Purchase extends BaseEntity {
   }
 
   setQueryUser(user: User): Purchase {
-    this.product.setQueryUser(user);
+    this.product?.setQueryUser(user);
     return this;
   }
 }

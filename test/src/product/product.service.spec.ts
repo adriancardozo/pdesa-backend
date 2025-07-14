@@ -11,6 +11,8 @@ import {
   idMl,
   emptyMercadoLibreProductsIds,
   mercadoLibreProductsIds,
+  emptyIds,
+  ids,
   mergedProducts,
   mlProduct,
   product,
@@ -243,6 +245,38 @@ describe('ProductService', () => {
 
     it('should return found products', async () => {
       const result = await service.findProductsByIdsMl(mercadoLibreProductsIds, relations, manager);
+      expect(result).toEqual(products);
+    });
+  });
+
+  describe('Find products by ids ', () => {
+    beforeEach(() => {
+      manager.find.mockResolvedValue(products);
+    });
+
+    it('should run in transaction', async () => {
+      const transaction = jest.spyOn(transactionService, 'transaction');
+      await service.findProductsByIds(ids, relations, manager);
+      expect(transaction).toHaveBeenCalled();
+    });
+
+    it("should not find products ids if there aren't ids", async () => {
+      await service.findProductsByIds(emptyIds, relations, manager);
+      expect(manager.find).toHaveBeenCalledTimes(0);
+    });
+
+    it("should return empty result if there aren't ids", async () => {
+      const result = await service.findProductsByIds(emptyIds, relations, manager);
+      expect(result).toEqual(emptyProducts);
+    });
+
+    it('should find products by ids', async () => {
+      await service.findProductsByIds(ids, relations, manager);
+      expect(manager.find).toHaveBeenCalledWith(Product, { where: ids, relations });
+    });
+
+    it('should return found products', async () => {
+      const result = await service.findProductsByIds(ids, relations, manager);
       expect(result).toEqual(products);
     });
   });

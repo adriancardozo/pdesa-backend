@@ -13,6 +13,9 @@ import {
   createUserDtoWithPasswordHash,
   errors,
   id,
+  ids,
+  emptyIds,
+  emptyUsers,
   notUniqueError,
   passwordHash,
   payload,
@@ -153,6 +156,38 @@ describe('UserService', () => {
 
     it('should return users', async () => {
       const result = await service.users(usersQueries, manager);
+      expect(result).toEqual(users);
+    });
+  });
+
+  describe('Find users by ids ', () => {
+    beforeEach(() => {
+      manager.find.mockResolvedValue(users);
+    });
+
+    it('should run in transaction', async () => {
+      const transaction = jest.spyOn(transactionService, 'transaction');
+      await service.findUsersByIds(ids, relations, manager);
+      expect(transaction).toHaveBeenCalled();
+    });
+
+    it("should not find users by ids if there aren't ids", async () => {
+      await service.findUsersByIds(emptyIds, relations, manager);
+      expect(manager.find).toHaveBeenCalledTimes(0);
+    });
+
+    it("should return empty result if there aren't ids", async () => {
+      const result = await service.findUsersByIds(emptyIds, relations, manager);
+      expect(result).toEqual(emptyUsers);
+    });
+
+    it('should find users by ids', async () => {
+      await service.findUsersByIds(ids, relations, manager);
+      expect(manager.find).toHaveBeenCalledWith(User, { where: ids, relations });
+    });
+
+    it('should return found users', async () => {
+      const result = await service.findUsersByIds(ids, relations, manager);
       expect(result).toEqual(users);
     });
   });

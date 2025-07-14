@@ -77,6 +77,16 @@ export class ProductService {
     }, manager);
   }
 
+  async findProductsByIds(
+    ids: Array<{ id: string }>,
+    relations?: FindOneOptions<Product>['relations'],
+    manager?: EntityManager,
+  ): Promise<Array<Product>> {
+    return await this.transactionService.transaction(async (manager) => {
+      return ids.length > 0 ? await manager.find(Product, { where: ids, relations }) : [];
+    }, manager);
+  }
+
   private async searchAdapter(q: string, user: User): Promise<MercadoLibreProductAdapter> {
     const { results } = await this.mercadoLibreProductService.search(q);
     return new MercadoLibreProductAdapter(results, user);
