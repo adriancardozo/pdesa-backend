@@ -1,4 +1,13 @@
-import { Controller, Get, Query, Request, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  Request,
+  UseGuards,
+  UseInterceptors,
+  UsePipes,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { Role } from 'src/user/enum/role.enum';
@@ -11,6 +20,7 @@ import { Product } from './entity/product.entity';
 import { ProductResponse } from './response/product.response';
 import { TransformInterceptor } from 'src/shared/interceptors/transform.interceptor';
 import { MetricsInterceptor } from 'src/metrics/interceptor/metrics.interceptor';
+import { ProductParam } from './param/product.param';
 
 @ApiBearerAuth()
 @Controller('product')
@@ -29,5 +39,17 @@ export class ProductController {
   @Get('search')
   async search(@Query('q') q: string, @Request() req: UserRequest): Promise<Array<Product>> {
     return await this.productService.search(q, req.user);
+  }
+
+  @Roles(Role.purchaser, Role.administrator)
+  @ApiOperation({
+    summary: 'Get product',
+    description: `*roles*: **${[Role.administrator, Role.purchaser].toString()}**`,
+  })
+  @ApiResponse({ type: ProductResponse })
+  @UseInterceptors(new TransformInterceptor(ProductResponse), MetricsInterceptor)
+  @Get(':ml_id')
+  async product(@Param() { ml_id }: ProductParam, @Request() req: UserRequest): Promise<Product> {
+    return await this.productService.product(ml_id, req.user);
   }
 }

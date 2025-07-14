@@ -45,6 +45,10 @@ export const mercadoLibreProductsIds = searchResult.results.map((product) => ({ 
 
 export const emptyMercadoLibreProductsIds = [];
 
+export const ids = products.map((product) => ({ id: product.id }));
+
+export const emptyIds = [];
+
 export const user = { id: '1' } as User;
 
 export const q = 'product query';

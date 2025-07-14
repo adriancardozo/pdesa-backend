@@ -1,5 +1,5 @@
 import { Favorite } from 'src/favorite/entity/favorite.entity';
-import type { Purchase } from 'src/purchase/entity/purchase.entity';
+import { Purchase } from 'src/purchase/entity/purchase.entity';
 import { Role } from '../enum/role.enum';
 import typeorm, { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from 'src/shared/entity/base.entity';
@@ -33,6 +33,10 @@ export class User extends BaseEntity {
 
   queryUser: User;
 
+  get amountPurchases(): number {
+    return this.purchases.length;
+  }
+
   addFavorite(product: Product): Favorite {
     let favorite = this.findFavorite(product.idMl);
     if (!favorite) {
@@ -54,9 +58,17 @@ export class User extends BaseEntity {
     return favorite;
   }
 
-  setQueryUser(user: User) {
+  purchase(product: Product, amount: number): Purchase {
+    const purchase = new Purchase(amount, this, product);
+    this.purchases.push(purchase);
+    return purchase;
+  }
+
+  setQueryUser(user: User): User {
     this.queryUser = user;
-    this.favorites.forEach((favorite) => favorite.setQueryUser(user));
+    this.favorites?.forEach((favorite) => favorite.setQueryUser(user));
+    this.purchases?.forEach((purchase) => purchase.setQueryUser(user));
+    return this;
   }
 
   protected findFavorite(idMl: string): Favorite | null {

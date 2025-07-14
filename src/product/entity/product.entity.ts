@@ -29,11 +29,21 @@ export class Product extends BaseEntity {
   @OneToMany('Favorite', (favorite: Favorite) => favorite.product, { cascade: true })
   favorites: Array<typeorm.Relation<Favorite>>;
 
+  price: number = 25;
+
   queryUser: User;
 
   get isFavorite(): boolean {
     if (!this.queryUser) throw new BadRequestException(errors.notQueryUser);
     return this.favorites?.some((favorite) => favorite.userId === this.queryUser.id) ?? false;
+  }
+
+  get amountFavorites(): number {
+    return this.favorites.length;
+  }
+
+  get amountPurchases(): number {
+    return this.purchases.reduce((sum, purchase) => sum + purchase.amount, 0);
   }
 
   constructor(
@@ -53,7 +63,8 @@ export class Product extends BaseEntity {
     this.images = images;
   }
 
-  setQueryUser(user: User) {
+  setQueryUser(user: User): Product {
     this.queryUser = user;
+    return this;
   }
 }

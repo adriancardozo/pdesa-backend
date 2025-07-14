@@ -8,7 +8,11 @@ import {
   productWithoutFavoritesJson,
   productWithoutQueryUserJson,
   user,
+  favorites,
+  amount,
 } from './test-data/product.entity.spec.data';
+import { Purchase } from 'src/purchase/entity/purchase.entity';
+import { mock } from 'test/resources/mocks/mock';
 
 describe('Product', () => {
   let product: Product;
@@ -50,6 +54,28 @@ describe('Product', () => {
     it('should set query user', () => {
       productWithoutQueryUser.setQueryUser(user);
       expect(productWithoutQueryUser.queryUser).toEqual(user);
+    });
+  });
+
+  describe('Amount purchases', () => {
+    let purchase: jest.Mocked<Purchase>;
+
+    beforeEach(() => {
+      purchase = mock(Purchase);
+      product.purchases = [purchase];
+      purchase.amount = amount;
+    });
+
+    it('should return purchases amount sum', () => {
+      const result = product.amountPurchases;
+      expect(result).toEqual(purchase.amount);
+    });
+  });
+
+  describe('Amount favorites', () => {
+    it('should return favorites count', () => {
+      const result = product.amountFavorites;
+      expect(result).toEqual(favorites.length);
     });
   });
 

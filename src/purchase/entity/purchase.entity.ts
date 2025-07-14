@@ -16,4 +16,21 @@ export class Purchase extends BaseEntity {
   product: typeorm.Relation<Product>;
   @ManyToOne('User', (user: User) => user.purchases)
   user: typeorm.Relation<User>;
+
+  get finalPrice(): number {
+    return this.price * this.amount;
+  }
+
+  constructor(amount: number, user: User, product: Product) {
+    super();
+    this.user = user;
+    this.product = product;
+    this.amount = amount;
+    this.price = product?.price;
+  }
+
+  setQueryUser(user: User): Purchase {
+    this.product?.setQueryUser(user);
+    return this;
+  }
 }

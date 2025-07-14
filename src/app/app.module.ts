@@ -10,6 +10,8 @@ import { AuthModule } from 'src/auth/auth.module';
 import { InitialDataModule } from 'src/initial-data/initial-data.module';
 import { FavoriteModule } from 'src/favorite/favorite.module';
 import { MetricsModule } from 'src/metrics/metrics.module';
+import { PurchaseModule } from 'src/purchase/purchase.module';
+import { AdminMetricsModule } from 'src/admin-metrics/admin-metrics.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { MetricsModule } from 'src/metrics/metrics.module';
     FavoriteModule,
     AuthModule,
     MetricsModule,
+    PurchaseModule,
+    AdminMetricsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
