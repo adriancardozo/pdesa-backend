@@ -186,6 +186,21 @@ describe('User', () => {
     });
   });
 
+  describe('Amount purchases', () => {
+    let PurchaseClass: jest.SpyInstance;
+
+    beforeEach(() => {
+      PurchaseClass = jest.spyOn(PurchaseEntity, 'Purchase');
+      PurchaseClass.mockReturnValue(purchase);
+      user.purchase(product, amount);
+    });
+
+    it('should return purchases length', () => {
+      const result = user.amountPurchases;
+      expect(result).toEqual(user.purchases.length);
+    });
+  });
+
   describe('Purchase', () => {
     let PurchaseClass: jest.SpyInstance;
 

@@ -41,10 +41,10 @@ export class ProductController {
     return await this.productService.search(q, req.user);
   }
 
-  @Roles(Role.purchaser)
+  @Roles(Role.purchaser, Role.administrator)
   @ApiOperation({
     summary: 'Get product',
-    description: `*roles*: **${[Role.purchaser].toString()}**`,
+    description: `*roles*: **${[Role.administrator, Role.purchaser].toString()}**`,
   })
   @ApiResponse({ type: ProductResponse })
   @UseInterceptors(new TransformInterceptor(ProductResponse), MetricsInterceptor)

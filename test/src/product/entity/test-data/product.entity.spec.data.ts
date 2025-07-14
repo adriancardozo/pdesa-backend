@@ -18,6 +18,7 @@ export const productJson = {
   favorites,
   idMl: favorites[0].idMl,
   queryUser: user,
+  purchases: [],
 };
 
 export const productWithoutFavoritesJson = {
@@ -44,3 +45,5 @@ export const productWithoutQueryUserJson = {
   favorites,
   idMl: favorites[1].idMl,
 };
+
+export const amount = 5;

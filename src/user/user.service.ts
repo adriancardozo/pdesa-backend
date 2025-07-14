@@ -35,6 +35,16 @@ export class UserService {
     }, manager);
   }
 
+  async findUsersByIds(
+    ids: Array<{ id: string }>,
+    relations?: FindOneOptions<User>['relations'],
+    manager?: EntityManager,
+  ): Promise<Array<User>> {
+    return await this.transactionService.transaction(async (manager) => {
+      return ids.length > 0 ? await manager.find(User, { where: ids, relations }) : [];
+    }, manager);
+  }
+
   async findOneByUsername(username: string, manager?: EntityManager): Promise<User | null> {
     return await this.transactionService.transaction(async (manager) => {
       return await manager.findOneBy(User, { username });

@@ -33,6 +33,10 @@ export class User extends BaseEntity {
 
   queryUser: User;
 
+  get amountPurchases(): number {
+    return this.purchases.length;
+  }
+
   addFavorite(product: Product): Favorite {
     let favorite = this.findFavorite(product.idMl);
     if (!favorite) {
@@ -60,10 +64,11 @@ export class User extends BaseEntity {
     return purchase;
   }
 
-  setQueryUser(user: User) {
+  setQueryUser(user: User): User {
     this.queryUser = user;
     this.favorites?.forEach((favorite) => favorite.setQueryUser(user));
     this.purchases?.forEach((purchase) => purchase.setQueryUser(user));
+    return this;
   }
 
   protected findFavorite(idMl: string): Favorite | null {

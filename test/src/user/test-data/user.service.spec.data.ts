@@ -66,3 +66,9 @@ export const administratorUsersQueries = { role: Role.administrator } as UsersQu
 export const id = payload.id;
 
 export const relations = {} as FindOneOptions<User>['relations'];
+
+export const ids = users.map((user) => ({ id: user.id }));
+
+export const emptyIds = [];
+
+export const emptyUsers = [];
