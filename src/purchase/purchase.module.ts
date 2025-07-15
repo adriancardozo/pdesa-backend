@@ -9,5 +9,6 @@ import { TransactionModule } from 'src/transaction/transaction.module';
   imports: [ProductModule, UserModule, TransactionModule],
   controllers: [PurchaseController],
   providers: [PurchaseService],
+  exports: [PurchaseService],
 })
 export class PurchaseModule {}
