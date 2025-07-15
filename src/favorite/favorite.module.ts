@@ -9,5 +9,6 @@ import { TransactionModule } from 'src/transaction/transaction.module';
   imports: [ProductModule, UserModule, TransactionModule],
   controllers: [FavoriteController],
   providers: [FavoriteService],
+  exports: [FavoriteService],
 })
 export class FavoriteModule {}
