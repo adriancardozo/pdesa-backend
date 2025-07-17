@@ -2,6 +2,8 @@ import configuration from 'src/config/configuration';
 import { Favorite } from 'src/favorite/entity/favorite.entity';
 import { Role } from 'src/user/enum/role.enum';
 
+export const purchaseId = '1';
+
 export const userJson = {
   id: '1',
   username: 'user1',

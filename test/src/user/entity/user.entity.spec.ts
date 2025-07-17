@@ -11,6 +11,7 @@ import {
   userJson,
   userWithAFavoriteJson,
   amount,
+  purchaseId,
 } from './test-data/user.entity.spec.data';
 import * as FavoriteEntity from 'src/favorite/entity/favorite.entity';
 import { Favorite } from 'src/favorite/entity/favorite.entity';
@@ -226,6 +227,31 @@ describe('User', () => {
 
     afterEach(() => {
       jest.resetAllMocks();
+    });
+  });
+
+  describe('Get purchase', () => {
+    describe('Exists', () => {
+      beforeEach(() => {
+        purchase.id = purchaseId;
+        user.purchases = [purchase];
+      });
+
+      it('should return found purchase with id', () => {
+        const result = user.getPurchase(purchaseId);
+        expect(result).toEqual(purchase);
+      });
+    });
+
+    describe('Not exists', () => {
+      beforeEach(() => {
+        purchase.id = purchaseId;
+        user.purchases = [];
+      });
+
+      it('should fail if not found purchase', () => {
+        expect(() => user.getPurchase(purchaseId)).toThrow(new NotFoundException(errors.purchaseNotFound));
+      });
     });
   });
 });
