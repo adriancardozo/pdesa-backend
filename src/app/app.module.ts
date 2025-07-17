@@ -12,6 +12,7 @@ import { FavoriteModule } from 'src/favorite/favorite.module';
 import { MetricsModule } from 'src/metrics/metrics.module';
 import { PurchaseModule } from 'src/purchase/purchase.module';
 import { AdminMetricsModule } from 'src/admin-metrics/admin-metrics.module';
+import { AdminUserModule } from 'src/admin-user/admin-user.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AdminMetricsModule } from 'src/admin-metrics/admin-metrics.module';
     MetricsModule,
     PurchaseModule,
     AdminMetricsModule,
+    AdminUserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -13,3 +13,8 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ['backend_grupo8:3000']
+
+  - job_name: 'backend-deploy'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['pdesa-backend-adriancardozo.azurewebsites.net']
