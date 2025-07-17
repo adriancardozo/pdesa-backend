@@ -64,11 +64,21 @@ export class User extends BaseEntity {
     return purchase;
   }
 
+  getPurchase(id: string): Purchase {
+    const purchase = this.findPurchase(id);
+    if (!purchase) throw new NotFoundException(errors.purchaseNotFound);
+    return purchase;
+  }
+
   setQueryUser(user: User): User {
     this.queryUser = user;
     this.favorites?.forEach((favorite) => favorite.setQueryUser(user));
     this.purchases?.forEach((purchase) => purchase.setQueryUser(user));
     return this;
+  }
+
+  protected findPurchase(id: string): Purchase | null {
+    return this.purchases.find((purchase) => purchase.id === id) ?? null;
   }
 
   protected findFavorite(idMl: string): Favorite | null {

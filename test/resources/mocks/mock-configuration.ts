@@ -1,52 +1,30 @@
-import dotenv from 'dotenv';
-import { mlAccessToken } from './ml-access-token';
-
-dotenv.config({});
-
-const MERCADO_LIBRE_JSON_PATH = 'mercado-libre-token.json';
-
-const { refresh, token } = mlAccessToken(
-  MERCADO_LIBRE_JSON_PATH,
-  process.env.ML_ACCESS_TOKEN,
-  process.env.ML_REFRESH_TOKEN,
-);
-
 const app_name = 'pdesa_backend';
 
 const metrics_labels = ['method', 'path'];
+
+process.env.ML_URL = 'http://localhost:3001';
+process.env.ML_ACCESS_TOKEN = 'APP_USR';
+process.env.ML_REFRESH_TOKEN = 'TG';
 
 const configuration = {
   app: {
     name: app_name,
     title: 'Backend',
     description: 'Backend API (Prácticas de desarrollo)',
-    port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
-    version: process.env.SELF_VERSION ?? '-',
-    api_version: process.env.SELF_VERSION ?? '-',
+    port: 3000,
+    version: '-',
+    api_version: '-',
   },
-  jwt: { secret: process.env.JWT_SECRET! },
-  database: {
-    host: process.env.MSSQL_HOST,
-    port: parseInt(process.env.MSSQL_PORT ?? '1433', 10),
-    username: process.env.MSSQL_USER,
-    password: process.env.MSSQL_PASSWORD,
-    database: process.env.MSSQL_DB,
-    synchronize: process.env.MSSQL_SYNCHRONIZE === 'true',
-    logging: process.env.MSSQL_LOGGING === 'true',
-    options: {
-      encrypt: process.env.MSSQL_ENCRYPT === 'true',
-      trustServerCertificate: process.env.MSSQL_TRUST_CERT === 'true',
-    },
-  },
+  jwt: { secret: 'SECRET' },
   mercado_libre: {
-    app: { client_id: process.env.ML_CLIENT_ID!, client_secret: process.env.ML_CLIENT_SECRET! },
-    url: process.env.ML_URL!,
-    refresh_token: refresh!,
+    app: { client_id: '', client_secret: '' },
+    url: 'http://localhost:3001',
+    refresh_token: '',
     refresh_config: {
       headers: { accept: 'application/json', 'content-type': 'application/x-www-form-urlencoded' },
     },
-    json_path: MERCADO_LIBRE_JSON_PATH,
-    axios_config: { headers: { authorization: (token ? `Bearer ${token}` : undefined)! } },
+    json_path: '',
+    axios_config: { headers: { authorization: '' } },
   },
   metrics: {
     app: app_name,

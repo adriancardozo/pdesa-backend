@@ -29,6 +29,7 @@ export class PurchaseResponse extends Response<Purchase> {
     this.amount = purchase.amount;
     this.created_at = purchase.createdAt.toISOString();
     this.product = mapper.map(purchase.product, ProductResponse);
+    purchase.setReviewable();
     this.review = mapper.map(purchase.review, ReviewResponse);
   }
 }

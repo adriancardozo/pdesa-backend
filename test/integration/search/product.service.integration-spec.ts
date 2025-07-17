@@ -1,7 +1,6 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import configuration from 'src/config/configuration';
 import { DATA_SOURCE_OPTIONS } from 'src/config/data-source.options';
 import { ProductModule } from 'src/product/product.module';
 import { ProductService } from 'src/product/product.service';
@@ -10,6 +9,7 @@ import { User } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 import { UserModule } from 'src/user/user.module';
 import { MetricsModule } from 'src/metrics/metrics.module';
+import configuration from 'test/resources/mocks/mock-configuration';
 
 describe('ProductService', () => {
   let module: TestingModule;
