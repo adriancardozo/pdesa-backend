@@ -6,6 +6,7 @@ import { User } from 'src/user/entity/user.entity';
 import { mock } from 'test/resources/mocks/mock';
 import { EntityManager } from 'typeorm';
 import {
+  id,
   amount,
   idMlDto,
   productRelations,
@@ -129,6 +130,40 @@ describe('PurchaseService', () => {
 
     it('should return created purchase', async () => {
       const result = await service.purchase(idMlDto, purchaseDto, user, manager);
+      expect(result).toEqual(purchase);
+    });
+  });
+
+  describe('Get purchase', () => {
+    let purchase: Purchase;
+    let user: jest.Mocked<User>;
+
+    beforeEach(() => {
+      user = mock(User);
+      user.id = userDto.id;
+      purchase = mock(Purchase);
+      user.getPurchase.mockReturnValue(purchase);
+      userService.findOneById.mockResolvedValue(user);
+    });
+
+    it('should run in transaction', async () => {
+      const transaction = jest.spyOn(transactionService, 'transaction');
+      await service.getPurchase(id, user, manager);
+      expect(transaction).toHaveBeenCalled();
+    });
+
+    it('should get user', async () => {
+      await service.getPurchase(id, user, manager);
+      expect(userService.findOneById).toHaveBeenCalledWith(user.id, userRelations, manager);
+    });
+
+    it('should get purchase', async () => {
+      await service.getPurchase(id, user, manager);
+      expect(user.getPurchase).toHaveBeenCalledWith(id);
+    });
+
+    it('should return purchase', async () => {
+      const result = await service.getPurchase(id, user, manager);
       expect(result).toEqual(purchase);
     });
   });

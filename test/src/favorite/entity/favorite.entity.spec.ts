@@ -1,16 +1,20 @@
 import { Favorite } from 'src/favorite/entity/favorite.entity';
-import { errors, product } from './test-data/favorite.entity.spec.data';
+import { errors, product, reviewData } from './test-data/favorite.entity.spec.data';
 import { BadRequestException } from '@nestjs/common';
 import { User } from 'src/user/entity/user.entity';
 import { mock } from 'test/resources/mocks/mock';
+import { ReviewType } from 'src/review/enum/review-type.enum';
+import { Review } from 'src/review/entity/review.entity';
 
 describe('Favorite', () => {
   let favorite: Favorite;
   let favoriteWithoutQueryUser: Favorite;
   let user: jest.Mocked<User>;
+  let review: jest.Mocked<Review>;
 
   beforeEach(() => {
     user = mock(User);
+    review = mock(Review);
     favorite = new Favorite(user, product);
     favorite.setQueryUser(user);
     favoriteWithoutQueryUser = new Favorite(user, product);
@@ -52,6 +56,73 @@ describe('Favorite', () => {
     it('should set query user', () => {
       favoriteWithoutQueryUser.setQueryUser(user);
       expect(favoriteWithoutQueryUser.queryUser).toEqual(user);
+    });
+  });
+
+  describe('Review type', () => {
+    it('should return favorite review type', () => {
+      const result = favorite.reviewType;
+      expect(result).toEqual(ReviewType.favorite);
+    });
+  });
+
+  describe('Reviewed', () => {
+    let reviewed: boolean;
+
+    beforeEach(() => {
+      reviewed = jest.fn() as any as boolean;
+      review.reviewed = reviewed;
+      favorite.review = review;
+    });
+
+    it('should return favorite review type', () => {
+      const result = favorite.reviewed;
+      expect(result).toEqual(reviewed);
+    });
+  });
+
+  describe('Update review', () => {
+    beforeEach(() => {
+      favorite.review = review;
+      review.update.mockReturnValue(review);
+    });
+
+    it('should update review', () => {
+      favorite.updateReview(reviewData);
+      expect(review.update).toHaveBeenCalledWith(reviewData);
+    });
+
+    it('should return favorite review', () => {
+      const result = favorite.updateReview(reviewData);
+      expect(result).toEqual(review);
+    });
+  });
+
+  describe('Delete review', () => {
+    beforeEach(() => {
+      favorite.review = review;
+      review.delete.mockReturnValue(review);
+    });
+
+    it('should delete review', () => {
+      favorite.deleteReview();
+      expect(review.delete).toHaveBeenCalledWith();
+    });
+
+    it('should return favorite review', () => {
+      const result = favorite.deleteReview();
+      expect(result).toEqual(review);
+    });
+  });
+
+  describe('Set reviewable', () => {
+    beforeEach(() => {
+      favorite.review = review;
+    });
+
+    it('should set reviewable', () => {
+      favorite.setReviewable();
+      expect(review.setReviewable).toHaveBeenCalledWith(favorite);
     });
   });
 

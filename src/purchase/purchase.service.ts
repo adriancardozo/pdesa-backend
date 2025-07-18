@@ -12,7 +12,7 @@ import { PurchaseDto } from './dto/purchase.dto';
 @Injectable()
 export class PurchaseService {
   private readonly userRelations: FindOneOptions<User>['relations'] = {
-    purchases: { product: { images: true, favorites: true } },
+    purchases: { product: { images: true, favorites: true }, user: true },
   };
   private readonly productRelations: FindOneOptions<Product>['relations'] = {
     images: true,
@@ -45,6 +45,13 @@ export class PurchaseService {
       const purchase = user.purchase(product, amount);
       await manager.save(user);
       return purchase.setQueryUser(user);
+    }, manager);
+  }
+
+  async getPurchase(id: string, userDto: User, manager?: EntityManager): Promise<Purchase> {
+    return await this.transactionService.transaction(async (manager) => {
+      const user = await this.userService.findOneById(userDto.id, this.userRelations, manager);
+      return user.getPurchase(id);
     }, manager);
   }
 }
